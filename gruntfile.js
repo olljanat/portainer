@@ -258,11 +258,7 @@ gruntfile_cfg.replace = {
 function shell_buildBinary(p, a) {
   var binfile = 'dist/portainer-'+p+'-'+a;
   return [
-    'if [ -f '+(( p === 'windows' ) ? binfile+'.exe' : binfile)+' ]; then',
-      'echo "Portainer binary exists";',
-    'else',
-      'build/build_in_container.sh ' + p + ' ' + a + ';',
-    'fi'
+      'build/build_in_container.sh ' + p + ' ' + a + ';'
   ].join(' ');
 }
 

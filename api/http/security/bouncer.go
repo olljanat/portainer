@@ -30,10 +30,12 @@ type (
 	// RestrictedRequestContext is a data structure containing information
 	// used in RestrictedAccess
 	RestrictedRequestContext struct {
-		IsAdmin         bool
-		IsTeamLeader    bool
-		UserID          portainer.UserID
-		UserMemberships []portainer.TeamMembership
+		IsAdmin             bool
+		IsTeamLeader        bool
+		canStopContainer    bool
+		canRemoveContainer  bool
+		UserID              portainer.UserID
+		UserMemberships     []portainer.TeamMembership
 	}
 )
 
@@ -208,6 +210,8 @@ func (bouncer *RequestBouncer) newRestrictedContextRequest(userID portainer.User
 	requestContext := &RestrictedRequestContext{
 		IsAdmin: true,
 		UserID:  userID,
+		canStopContainer: true,
+		canRemoveContainer: true,
 	}
 
 	if userRole != portainer.AdministratorRole {
@@ -221,7 +225,13 @@ func (bouncer *RequestBouncer) newRestrictedContextRequest(userID portainer.User
 		for _, membership := range memberships {
 			if membership.Role == portainer.TeamLeader {
 				isTeamLeader = true
+
+			// FixMe: Temporary solution for debugging. Only team leader have rights to do anything
+			} else {
+				requestContext.canStopContainer = false
+				requestContext.canRemoveContainer = false
 			}
+
 		}
 
 		requestContext.IsTeamLeader = isTeamLeader
