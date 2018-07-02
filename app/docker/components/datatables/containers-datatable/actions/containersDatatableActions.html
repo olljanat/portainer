@@ -1,4 +1,4 @@
-<div class="actionBar">
+<div class="actionBar" ng-if="$ctrl.isReadWrite">
   <div class="btn-group" role="group" aria-label="...">
     <button type="button" class="btn btn-sm btn-success" ng-click="$ctrl.startAction($ctrl.selectedItems)"
       ng-disabled="$ctrl.selectedItemCount === 0 || $ctrl.noStoppedItemsSelected">
