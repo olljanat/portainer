@@ -7,6 +7,13 @@ angular.module('portainer.docker').component('containersDatatableActions', {
     noStoppedItemsSelected: '=',
     noRunningItemsSelected: '=',
     noPausedItemsSelected: '=',
+    showStartAction: '<',
+    showStopAction: '<',
+    showKillAction: '<',
+    showRestartAction: '<',
+    showPauseAction: '<',
+    showResumeAction: '<',
+    showRemoveAction: '<',
     showAddAction: '<'
   }
 });
