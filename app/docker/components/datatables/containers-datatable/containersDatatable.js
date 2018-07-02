@@ -11,6 +11,14 @@ angular.module('portainer.docker').component('containersDatatable', {
     showTextFilter: '<',
     showOwnershipColumn: '<',
     showHostColumn: '<',
-    showAddAction: '<'
+    showStartAction: '<',
+    showStopAction: '<',
+    showKillAction: '<',
+    showRestartAction: '<',
+    showPauseAction: '<',
+    showResumeAction: '<',
+    showRemoveAction: '<',
+    showAddAction: '<',
+    showEditAction: '<'
   }
 });
