@@ -13,11 +13,11 @@
       <i class="fa fa-bomb space-right" aria-hidden="true"></i>Kill
     </button>
     <button type="button" class="btn btn-sm btn-primary" ng-click="$ctrl.restartAction($ctrl.selectedItems)"
-      ng-disabled="$ctrl.selectedItemCount === 0">
+      ng-disabled="$ctrl.selectedItemCount === 0 || !item.canStopContainer">
       <i class="fa fa-sync space-right" aria-hidden="true"></i>Restart
     </button>
     <button type="button" class="btn btn-sm btn-primary" ng-click="$ctrl.pauseAction($ctrl.selectedItems)"
-      ng-disabled="$ctrl.selectedItemCount === 0 || $ctrl.noRunningItemsSelected">
+      ng-disabled="$ctrl.selectedItemCount === 0 || $ctrl.noRunningItemsSelected || !item.canStopContainer">
       <i class="fa fa-pause space-right" aria-hidden="true"></i>Pause
     </button>
     <button type="button" class="btn btn-sm btn-primary" ng-click="$ctrl.resumeAction($ctrl.selectedItems)"
