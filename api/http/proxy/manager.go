@@ -52,7 +52,7 @@ func (manager *Manager) createDockerProxy(endpointURL *url.URL, tlsConfig *porta
 		return manager.proxyFactory.newDockerHTTPProxy(endpointURL, false), nil
 	}
 	if endpointURL.Scheme == "npipe" {
-                return manager.proxyFactory.newNamedPipeProxy(endpointURL.Path), nil
+		return manager.proxyFactory.newNamedPipeProxy(endpointURL.Path), nil
 	}
 	// Assume unix:// scheme
 	return manager.proxyFactory.newDockerSocketProxy(endpointURL.Path), nil

@@ -81,7 +81,7 @@
                     </p>
                     <p class="text-muted">
                       <i class="fa fa-exclamation-circle orange-icon" aria-hidden="true" style="margin-right: 2px;"></i>
-                      Ensure that you have started the Portainer container with the following Docker flag: <code>-v "/var/run/docker.sock:/var/run/docker.sock"</code>.
+                      Ensure that you have started the Portainer container with the following Docker flag: <code>-v "/var/run/docker.sock:/var/run/docker.sock"</code> (Linux) or <code>-v \\.\pipe\docker_engine:\\.\pipe\docker_engine</code> (Native Windows containers) in order to connect to the local Docker environment.
                     </p>
                   </span>
                 </div>
