@@ -167,7 +167,7 @@ func createDial(endpoint *portainer.Endpoint) (net.Conn, error) {
 	var host string
 	if url.Scheme == "tcp" {
 		host = url.Host
-	} else if url.Scheme == "unix" {
+	} else if url.Scheme == "unix" || url.Scheme == "npipe" {
 		host = url.Path
 	}
 

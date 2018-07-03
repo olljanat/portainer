@@ -51,6 +51,9 @@ func (manager *Manager) createDockerProxy(endpointURL *url.URL, tlsConfig *porta
 		}
 		return manager.proxyFactory.newDockerHTTPProxy(endpointURL, false), nil
 	}
+	if endpointURL.Scheme == "npipe" {
+                return manager.proxyFactory.newNamedPipeProxy(endpointURL.Path), nil
+	}
 	// Assume unix:// scheme
 	return manager.proxyFactory.newDockerSocketProxy(endpointURL.Path), nil
 }
@@ -77,24 +80,6 @@ func (manager *Manager) CreateAndRegisterProxy(endpoint *portainer.Endpoint) (ht
 	proxy, err := manager.createProxy(endpoint)
 	if err != nil {
 		return nil, err
-	}
-	switch endpointURL.Scheme {
-	case "tcp":
-		{
-			if endpoint.TLSConfig.TLS {
-				proxy, err = manager.proxyFactory.newHTTPSProxy(endpointURL, endpoint)
-				if err != nil {
-					return nil, err
-				}
-			} else {
-				proxy = manager.proxyFactory.newHTTPProxy(endpointURL)
-			}
-		}
-	case "npipe":
-		proxy = manager.proxyFactory.newNamedPipeProxy(endpointURL.Path)
-	default:
-		// Assume unix:// scheme
-		proxy = manager.proxyFactory.newSocketProxy(endpointURL.Path)
 	}
 
 	manager.proxies.Set(string(endpoint.ID), proxy)

@@ -61,7 +61,7 @@ func (factory *proxyFactory) newDockerHTTPProxy(u *url.URL, enableSignature bool
 }
 
 func (factory *proxyFactory) newDockerSocketProxy(path string) http.Handler {
-	proxy := &socketProxy{}
+	proxy := &localProxy{}
 	transport := &proxyTransport{
 		enableSignature:        false,
 		ResourceControlService: factory.ResourceControlService,
