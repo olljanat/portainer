@@ -5,10 +5,11 @@ package cli
 const (
 	defaultBindAddress     = ":9000"
 	defaultDataDirectory   = "/data"
-	defaultAssetsDirectory = "/"
+	defaultAssetsDirectory = "./"
 	defaultNoAuth          = "false"
 	defaultNoAnalytics     = "false"
-	defaultTLSVerify       = "false"
+	defaultTLS             = "false"
+	defaultTLSSkipVerify   = "false"
 	defaultTLSCACertPath   = "/certs/ca.pem"
 	defaultTLSCertPath     = "/certs/cert.pem"
 	defaultTLSKeyPath      = "/certs/key.pem"
@@ -16,4 +17,5 @@ const (
 	defaultSSLCertPath     = "/certs/portainer.crt"
 	defaultSSLKeyPath      = "/certs/portainer.key"
 	defaultSyncInterval    = "60s"
+	defaultTemplateFile    = "/templates.json"
 )

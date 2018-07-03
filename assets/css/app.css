@@ -1,14 +1,14 @@
-html, body, #content-wrapper, .page-content, #view {
+html, body, #page-wrapper, #content-wrapper, .page-content, #view {
   height: 100%;
   width: 100%;
 }
 
-.white-space-normal {
-  white-space: normal !important;
+#view {
+  position: relative;
 }
 
-.btn-group button {
-  margin: 3px;
+.white-space-normal {
+  white-space: normal !important;
 }
 
 .messages {
@@ -26,11 +26,8 @@ html, body, #content-wrapper, .page-content, #view {
 
 .logo {
   display: inline;
-  width: 100%;
   max-width: 155px;
-  height: 100%;
   max-height: 55px;
-  margin-bottom: 5px;
 }
 
 .containerNameInput {
@@ -82,6 +79,10 @@ a[ng-click]{
   margin-right: 5px;
 }
 
+.space-left {
+  margin-left: 5px;
+}
+
 .tooltip.portainer-tooltip .tooltip-inner {
   font-family: Montserrat;
   background-color: #ffffff;
@@ -118,6 +119,10 @@ a[ng-click]{
   color: white;
 }
 
+.fa.blue-icon {
+  color: #337ab7;
+}
+
 .widget .widget-body table tbody .image-tag {
   font-size: 90% !important;
   margin-right: 5px;
@@ -125,6 +130,14 @@ a[ng-click]{
 
 .widget .widget-body table tbody .fit-text-size {
   font-size: 90% !important;
+}
+
+.widget .widget-body table thead th {
+  font-weight: normal;
+}
+
+.widget .widget-body table tbody td {
+  white-space: nowrap;
 }
 
 .template-widget {
@@ -139,6 +152,8 @@ a[ng-click]{
 .template-list {
   display: flex;
   flex-direction: column;
+  padding: 10px;
+  border-top: 2px solid #e2e2e2;
 }
 
 .template-logo {
@@ -180,6 +195,11 @@ a[ng-click]{
 .template-title {
   font-size: 1.8em;
   font-weight: bold;
+}
+
+.template-type {
+  font-size: 0.9em;
+  padding-right: 1em;
 }
 
 .template-description {
@@ -282,11 +302,21 @@ a[ng-click]{
 }
 
 ul.sidebar {
-  bottom: 40px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 ul.sidebar .sidebar-title {
   height: auto;
+}
+
+ul.sidebar .sidebar-title .endpoint-name {
+  color: #fff;
+}
+
+ul.sidebar .sidebar-list a {
+  font-size: 14px;
 }
 
 ul.sidebar .sidebar-list a.active {
@@ -296,7 +326,32 @@ ul.sidebar .sidebar-list a.active {
   background: #2d3e63;
 }
 
-.sidebar-footer .logo {
+.sidebar-header {
+  height: 60px;
+  list-style: none;
+  text-indent: 20px;
+  font-size: 18px;
+  background: #2d3e63;
+}
+
+.sidebar-header a { color: #fff; }
+.sidebar-header a:hover {text-decoration: none; }
+
+.sidebar-header .menu-icon {
+  float: right;
+  padding-right: 28px;
+  line-height: 60px;
+}
+
+#page-wrapper:not(.open) .sidebar-footer-content {
+    display: none;
+}
+
+.sidebar-footer-content {
+  text-align: center;
+}
+
+.sidebar-footer-content .logo {
   width: 100%;
   max-width: 100px;
   height: 100%;
@@ -304,10 +359,24 @@ ul.sidebar .sidebar-list a.active {
   margin: 2px 0 2px 20px;
 }
 
-.sidebar-footer .version {
+.sidebar-footer-content .version {
   font-size: 11px;
   margin: 11px 20px 0 7px;
   color: #fff;
+}
+
+#sidebar-wrapper {
+  display: flex;
+  flex-flow: column;
+}
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
 }
 
 #image-layers .btn{
@@ -318,17 +387,86 @@ ul.sidebar .sidebar-list a.active {
   padding-right: 0;
 }
 
+.createResource {
+  margin-left: 5px;
+  font-size: 90%;
+}
+
+ul.sidebar .sidebar-list a.active .menu-icon {
+  text-indent: 25px;
+}
+
 ul.sidebar .sidebar-list .sidebar-sublist a {
   text-indent: 35px;
   font-size: 12px;
   color: #b2bfdc;
-  line-height: 40px;
+  line-height: 36px;
+}
+
+ul.sidebar .sidebar-title {
+  line-height: 36px;
+}
+ul.sidebar .sidebar-title .form-control {
+  height: 36px;
+  padding: 6px 12px;
+}
+
+ul.sidebar .sidebar-list {
+  height: 36px;
+}
+
+ul.sidebar .sidebar-list a, ul.sidebar .sidebar-list .sidebar-sublist a {
+  line-height: 36px;
+}
+
+ul.sidebar .sidebar-list .menu-icon {
+  line-height: 36px;
 }
 
 ul.sidebar .sidebar-list .sidebar-sublist a.active {
   color: #fff;
   border-left: 3px solid #fff;
   background: #2d3e63;
+}
+
+@media (max-height: 785px) {
+  ul.sidebar .sidebar-title {
+    line-height: 26px;
+  }
+  ul.sidebar .sidebar-title .form-control {
+    height: 26px;
+    padding: 3px 6px;
+  }
+  ul.sidebar .sidebar-list {
+    height: 26px;
+  }
+  ul.sidebar .sidebar-list a, ul.sidebar .sidebar-list .sidebar-sublist a {
+    font-size: 12px;
+    line-height: 26px;
+  }
+  ul.sidebar .sidebar-list .menu-icon {
+    line-height: 26px;
+  }
+}
+
+@media(min-height: 786px) and (max-height: 924px) {
+  ul.sidebar .sidebar-title {
+    line-height: 30px;
+  }
+  ul.sidebar .sidebar-title .form-control {
+    height: 30px;
+    padding: 5px 10px;
+  }
+  ul.sidebar .sidebar-list {
+    height: 30px;
+  }
+  ul.sidebar .sidebar-list a, ul.sidebar .sidebar-list .sidebar-sublist a {
+    font-size: 12px;
+    line-height: 30px;
+  }
+  ul.sidebar .sidebar-list .menu-icon {
+    line-height: 30px;
+  }
 }
 
 @media(min-width: 768px) and (max-width: 992px) {
@@ -396,6 +534,8 @@ ul.sidebar .sidebar-list .sidebar-sublist a.active {
   padding-right: 24px;
   transition: all ease 0.2s;
   -webkit-transition: all ease 0.2s;
+  -moz-transition: all ease 0.2s;
+  -o-transition: all ease 0.2s;
   border-radius: 24px;
   box-shadow: inset 0 0 1px 1px rgba(0,0,0,.5);
 }
@@ -414,6 +554,7 @@ ul.sidebar .sidebar-list .sidebar-sublist a.active {
   padding-right: 0;
   padding-left: 24px;
   -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,.5), inset 0 0 40px #337ab7;
+  -moz-box-shadow: inset 0 0 1px rgba(0,0,0,.5), inset 0 0 40px #337ab7;
   box-shadow: inset 0 0 1px rgba(0,0,0,.5), inset 0 0 40px #337ab7;
 }
 
@@ -432,6 +573,10 @@ ul.sidebar .sidebar-list .sidebar-sublist a.active {
   font-size: 14px;
   margin-bottom: 5px;
   font-weight: bold;
+}
+
+.boxselector_header .fa,.fab {
+  font-weight: normal;
 }
 
 .boxselector_wrapper input[type="radio"] {
@@ -464,7 +609,7 @@ ul.sidebar .sidebar-list .sidebar-sublist a.active {
 
 .boxselector_wrapper input[type="radio"]:checked + label::after {
   color: #337ab7;
-  font-family: FontAwesome;
+  font-family: "Font Awesome 5 Free";
   border: 2px solid #337ab7;
   content: "\f00c";
   font-size: 16px;
@@ -539,28 +684,24 @@ ul.sidebar .sidebar-list .sidebar-sublist a.active {
 }
 
 .visualizer_container .node .tasks .task_running {
-  border: 2px solid #23ae89;
   border-radius: 4px;
   background-color: rgb(35, 174, 137);
   background-color: rgba(35, 174, 137, 0.2);
 }
 
 .visualizer_container .node .tasks .task_stopped {
-  border: 2px solid #ae2323;
   border-radius: 4px;
   background-color: rgb(174, 35, 35);
   background-color: rgba(174, 35, 35, 0.2);
 }
 
 .visualizer_container .node .tasks .task_warning {
-  border: 2px solid #f0ad4e;
   border-radius: 4px;
   background-color: rgb(240, 173, 78);
   background-color: rgba(240, 173, 78, 0.2);
 }
 
 .visualizer_container .node .tasks .task_info {
-  border: 2px solid #46b8da;
   border-radius: 4px;
   background-color: rgb(70, 184, 218);
   background-color: rgba(70, 184, 218, 0.2);
@@ -569,6 +710,52 @@ ul.sidebar .sidebar-list .sidebar-sublist a.active {
 .visualizer_container .node .tasks .task .service_name {
   text-align: center;
   margin-bottom: 5px;
+}
+
+.log_viewer {
+  height:100%;
+  overflow-y: scroll;
+  white-space: pre-wrap;
+  color: black;
+  font-size: .85em;
+  background-color: white;
+}
+
+.log_viewer .inner_line {
+  padding: 0 15px;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+.log_viewer .inner_line:empty::after {
+  content: '.';
+  visibility: hidden;
+}
+
+.log_viewer .line_selected {
+  background-color: #C5CAE9;
+}
+
+.row.header .meta .page {
+  padding-top: 7px;
+}
+
+.tag {
+  padding: 2px 6px;
+  color: white;
+  background-color: #337ab7;
+  border: 1px solid #2e6da4;
+  border-radius: 4px;
+}
+
+.template-envvar {
+  padding-bottom: 5px;
+}
+
+.line-separator{
+  border-bottom: 1px solid #777;
+  width: 50%;
+  margin: 20px auto 10px auto;
 }
 
 /*bootbox override*/
@@ -611,7 +798,38 @@ ul.sidebar .sidebar-list .sidebar-sublist a.active {
 }
 /*!toaster override*/
 
+/*angular-loading-bar override*/
+#loadingbar-placeholder {
+  margin-bottom: 0;
+  height: 3px;
+}
+
+#loading-bar .bar {
+  position: relative;
+  height: 3px;
+  background: #738bc0;
+}
+/*!angular-loading-bar override*/
+
 .monospaced {
   font-family: monospace;
   font-weight: 600;
 }
+
+/* json-tree override */
+json-tree {
+  font-size: 13px;
+  color: #30426a;
+}
+
+json-tree .key {
+  color: #738bc0;
+  padding-right: 5px;
+}
+
+json-tree .branch-preview {
+  font-style: normal;
+  font-size: 11px;
+  opacity: .5;
+}
+/* !json-tree override */

@@ -1,5 +1,6 @@
 angular.module('portainer')
-.run(['$rootScope', '$state', 'Authentication', 'authManager', 'StateManager', 'EndpointProvider', 'Notifications', 'Analytics', function ($rootScope, $state, Authentication, authManager, StateManager, EndpointProvider, Notifications, Analytics) {
+.run(['$rootScope', '$state', 'Authentication', 'authManager', 'StateManager', 'EndpointProvider', 'Notifications', 'Analytics', 'cfpLoadingBar', '$transitions', 'HttpRequestHelper',
+function ($rootScope, $state, Authentication, authManager, StateManager, EndpointProvider, Notifications, Analytics, cfpLoadingBar, $transitions, HttpRequestHelper) {
   'use strict';
 
   EndpointProvider.initialize();
@@ -7,7 +8,7 @@ angular.module('portainer')
   StateManager.initialize()
   .then(function success(state) {
     if (state.application.authentication) {
-      initAuthentication(authManager, Authentication, $rootScope);
+      initAuthentication(authManager, Authentication, $rootScope, $state);
     }
     if (state.application.analytics) {
       initAnalytics(Analytics, $rootScope);
@@ -18,15 +19,28 @@ angular.module('portainer')
   });
 
   $rootScope.$state = $state;
+
+  // Workaround to prevent the loading bar from going backward
+  // https://github.com/chieffancypants/angular-loading-bar/issues/273
+  var originalSet = cfpLoadingBar.set;
+  cfpLoadingBar.set = function overrideSet(n) {
+    if (n > cfpLoadingBar.status()) {
+      originalSet.apply(cfpLoadingBar, arguments);
+    }
+  };
+
+  $transitions.onBefore({ to: 'docker.**' }, function() {
+    HttpRequestHelper.resetAgentTargetQueue();
+  });
 }]);
 
 
-function initAuthentication(authManager, Authentication, $rootScope) {
+function initAuthentication(authManager, Authentication, $rootScope, $state) {
   authManager.checkAuthOnRefresh();
   authManager.redirectWhenUnauthenticated();
   Authentication.init();
   $rootScope.$on('tokenHasExpired', function() {
-    $state.go('auth', {error: 'Your session has expired'});
+    $state.go('portainer.auth', {error: 'Your session has expired'});
   });
 }
 

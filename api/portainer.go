@@ -1,7 +1,5 @@
 package portainer
 
-import "io"
-
 type (
 	// Pair defines a key/value string pair
 	Pair struct {
@@ -12,26 +10,27 @@ type (
 	// CLIFlags represents the available flags on the CLI.
 	CLIFlags struct {
 		Addr              *string
+		AdminPassword     *string
+		AdminPasswordFile *string
 		Assets            *string
 		Data              *string
+		EndpointURL       *string
 		ExternalEndpoints *string
-		SyncInterval      *string
-		Endpoint          *string
+		Labels            *[]Pair
+		Logo              *string
 		NoAuth            *bool
 		NoAnalytics       *bool
-		TLSVerify         *bool
+		Templates         *string
+		TemplateFile      *string
+		TLS               *bool
+		TLSSkipVerify     *bool
 		TLSCacert         *string
 		TLSCert           *string
 		TLSKey            *string
 		SSL               *bool
 		SSLCert           *string
 		SSLKey            *string
-		AdminPassword     *string
-		AdminPasswordFile *string
-		// Deprecated fields
-		Logo      *string
-		Templates *string
-		Labels    *[]Pair
+		SyncInterval      *string
 	}
 
 	// Status represents the application status.
@@ -70,14 +69,16 @@ type (
 
 	// Settings represents the application settings.
 	Settings struct {
-		TemplatesURL                       string               `json:"TemplatesURL"`
 		LogoURL                            string               `json:"LogoURL"`
 		BlackListedLabels                  []Pair               `json:"BlackListedLabels"`
-		DisplayExternalContributors        bool                 `json:"DisplayExternalContributors"`
 		AuthenticationMethod               AuthenticationMethod `json:"AuthenticationMethod"`
 		LDAPSettings                       LDAPSettings         `json:"LDAPSettings"`
 		AllowBindMountsForRegularUsers     bool                 `json:"AllowBindMountsForRegularUsers"`
 		AllowPrivilegedModeForRegularUsers bool                 `json:"AllowPrivilegedModeForRegularUsers"`
+		// Deprecated fields
+		DisplayDonationHeader       bool
+		DisplayExternalContributors bool
+		TemplatesURL                string
 	}
 
 	// User represents a user account.
@@ -129,14 +130,20 @@ type (
 	}
 
 	// StackID represents a stack identifier (it must be composed of Name + "_" + SwarmID to create a unique identifier).
-	StackID string
+	StackID int
+
+	// StackType represents the type of the stack (compose v2, stack deploy v3).
+	StackType int
 
 	// Stack represents a Docker stack created via docker stack deploy.
 	Stack struct {
-		ID          StackID `json:"Id"`
-		Name        string  `json:"Name"`
-		EntryPoint  string  `json:"EntryPoint"`
-		SwarmID     string  `json:"SwarmId"`
+		ID          StackID    `json:"Id"`
+		Name        string     `json:"Name"`
+		Type        StackType  `json:"Type"`
+		EndpointID  EndpointID `json:"EndpointId"`
+		SwarmID     string     `json:"SwarmId"`
+		EntryPoint  string     `json:"EntryPoint"`
+		Env         []Pair     `json:"Env"`
 		ProjectPath string
 	}
 
@@ -151,7 +158,7 @@ type (
 		URL             string     `json:"URL"`
 		Authentication  bool       `json:"Authentication"`
 		Username        string     `json:"Username"`
-		Password        string     `json:"Password"`
+		Password        string     `json:"Password,omitempty"`
 		AuthorizedUsers []UserID   `json:"AuthorizedUsers"`
 		AuthorizedTeams []TeamID   `json:"AuthorizedTeams"`
 	}
@@ -161,22 +168,30 @@ type (
 	DockerHub struct {
 		Authentication bool   `json:"Authentication"`
 		Username       string `json:"Username"`
-		Password       string `json:"Password"`
+		Password       string `json:"Password,omitempty"`
 	}
 
 	// EndpointID represents an endpoint identifier.
 	EndpointID int
 
+	// EndpointType represents the type of an endpoint.
+	EndpointType int
+
 	// Endpoint represents a Docker endpoint with all the info required
 	// to connect to it.
 	Endpoint struct {
-		ID              EndpointID       `json:"Id"`
-		Name            string           `json:"Name"`
-		URL             string           `json:"URL"`
-		PublicURL       string           `json:"PublicURL"`
-		TLSConfig       TLSConfiguration `json:"TLSConfig"`
-		AuthorizedUsers []UserID         `json:"AuthorizedUsers"`
-		AuthorizedTeams []TeamID         `json:"AuthorizedTeams"`
+		ID               EndpointID          `json:"Id"`
+		Name             string              `json:"Name"`
+		Type             EndpointType        `json:"Type"`
+		URL              string              `json:"URL"`
+		GroupID          EndpointGroupID     `json:"GroupId"`
+		PublicURL        string              `json:"PublicURL"`
+		TLSConfig        TLSConfiguration    `json:"TLSConfig"`
+		AuthorizedUsers  []UserID            `json:"AuthorizedUsers"`
+		AuthorizedTeams  []TeamID            `json:"AuthorizedTeams"`
+		Extensions       []EndpointExtension `json:"Extensions"`
+		AzureCredentials AzureCredentials    `json:"AzureCredentials,omitempty"`
+		Tags             []string            `json:"Tags"`
 
 		// Deprecated fields
 		// Deprecated in DBVersion == 4
@@ -185,6 +200,40 @@ type (
 		TLSCertPath   string `json:"TLSCert,omitempty"`
 		TLSKeyPath    string `json:"TLSKey,omitempty"`
 	}
+
+	// AzureCredentials represents the credentials used to connect to an Azure
+	// environment.
+	AzureCredentials struct {
+		ApplicationID     string `json:"ApplicationID"`
+		TenantID          string `json:"TenantID"`
+		AuthenticationKey string `json:"AuthenticationKey"`
+	}
+
+	// EndpointGroupID represents an endpoint group identifier.
+	EndpointGroupID int
+
+	// EndpointGroup represents a group of endpoints.
+	EndpointGroup struct {
+		ID              EndpointGroupID `json:"Id"`
+		Name            string          `json:"Name"`
+		Description     string          `json:"Description"`
+		AuthorizedUsers []UserID        `json:"AuthorizedUsers"`
+		AuthorizedTeams []TeamID        `json:"AuthorizedTeams"`
+		Tags            []string        `json:"Tags"`
+
+		// Deprecated fields
+		Labels []Pair `json:"Labels"`
+	}
+
+	// EndpointExtension represents a extension associated to an endpoint.
+	EndpointExtension struct {
+		Type EndpointExtensionType `json:"Type"`
+		URL  string                `json:"URL"`
+	}
+
+	// EndpointExtensionType represents the type of an endpoint extension. Only
+	// one extension of each type can be associated to an endpoint.
+	EndpointExtensionType int
 
 	// ResourceControlID represents a resource control identifier.
 	ResourceControlID int
@@ -220,6 +269,88 @@ type (
 		AccessLevel ResourceAccessLevel `json:"AccessLevel"`
 	}
 
+	// TagID represents a tag identifier.
+	TagID int
+
+	// Tag represents a tag that can be associated to a resource.
+	Tag struct {
+		ID   TagID
+		Name string `json:"Name"`
+	}
+
+	// TemplateID represents a template identifier.
+	TemplateID int
+
+	// TemplateType represents the type of a template.
+	TemplateType int
+
+	// Template represents an application template.
+	Template struct {
+		// Mandatory container/stack fields
+		ID                TemplateID   `json:"Id"`
+		Type              TemplateType `json:"type"`
+		Title             string       `json:"title"`
+		Description       string       `json:"description"`
+		AdministratorOnly bool         `json:"administrator_only"`
+
+		// Mandatory container fields
+		Image string `json:"image"`
+
+		// Mandatory stack fields
+		Repository TemplateRepository `json:"repository"`
+
+		// Optional stack/container fields
+		Name       string        `json:"name,omitempty"`
+		Logo       string        `json:"logo,omitempty"`
+		Env        []TemplateEnv `json:"env,omitempty"`
+		Note       string        `json:"note,omitempty"`
+		Platform   string        `json:"platform,omitempty"`
+		Categories []string      `json:"categories,omitempty"`
+
+		// Optional container fields
+		Registry      string           `json:"registry,omitempty"`
+		Command       string           `json:"command,omitempty"`
+		Network       string           `json:"network,omitempty"`
+		Volumes       []TemplateVolume `json:"volumes,omitempty"`
+		Ports         []string         `json:"ports,omitempty"`
+		Labels        []Pair           `json:"labels,omitempty"`
+		Privileged    bool             `json:"privileged,omitempty"`
+		Interactive   bool             `json:"interactive,omitempty"`
+		RestartPolicy string           `json:"restart_policy,omitempty"`
+		Hostname      string           `json:"hostname,omitempty"`
+	}
+
+	// TemplateEnv represents a template environment variable configuration.
+	TemplateEnv struct {
+		Name        string              `json:"name"`
+		Label       string              `json:"label,omitempty"`
+		Description string              `json:"description,omitempty"`
+		Default     string              `json:"default,omitempty"`
+		Preset      bool                `json:"preset,omitempty"`
+		Select      []TemplateEnvSelect `json:"select,omitempty"`
+	}
+
+	// TemplateVolume represents a template volume configuration.
+	TemplateVolume struct {
+		Container string `json:"container"`
+		Bind      string `json:"bind,omitempty"`
+		ReadOnly  bool   `json:"readonly,omitempty"`
+	}
+
+	// TemplateRepository represents the git repository configuration for a template.
+	TemplateRepository struct {
+		URL       string `json:"url"`
+		StackFile string `json:"stackfile"`
+	}
+
+	// TemplateEnvSelect represents text/value pair that will be displayed as a choice for the
+	// template user.
+	TemplateEnvSelect struct {
+		Text    string `json:"text"`
+		Value   string `json:"value"`
+		Default bool   `json:"default"`
+	}
+
 	// ResourceAccessLevel represents the level of control associated to a resource.
 	ResourceAccessLevel int
 
@@ -236,6 +367,7 @@ type (
 	// DataStore defines the interface to manage the data.
 	DataStore interface {
 		Open() error
+		Init() error
 		Close() error
 		MigrateData() error
 	}
@@ -289,6 +421,15 @@ type (
 		Synchronize(toCreate, toUpdate, toDelete []*Endpoint) error
 	}
 
+	// EndpointGroupService represents a service for managing endpoint group data.
+	EndpointGroupService interface {
+		EndpointGroup(ID EndpointGroupID) (*EndpointGroup, error)
+		EndpointGroups() ([]EndpointGroup, error)
+		CreateEndpointGroup(group *EndpointGroup) error
+		UpdateEndpointGroup(ID EndpointGroupID, group *EndpointGroup) error
+		DeleteEndpointGroup(ID EndpointGroupID) error
+	}
+
 	// RegistryService represents a service for managing registry data.
 	RegistryService interface {
 		Registry(ID RegistryID) (*Registry, error)
@@ -301,23 +442,24 @@ type (
 	// StackService represents a service for managing stack data.
 	StackService interface {
 		Stack(ID StackID) (*Stack, error)
+		StackByName(name string) (*Stack, error)
 		Stacks() ([]Stack, error)
-		StacksBySwarmID(ID string) ([]Stack, error)
 		CreateStack(stack *Stack) error
 		UpdateStack(ID StackID, stack *Stack) error
 		DeleteStack(ID StackID) error
+		GetNextIdentifier() int
 	}
 
 	// DockerHubService represents a service for managing the DockerHub object.
 	DockerHubService interface {
 		DockerHub() (*DockerHub, error)
-		StoreDockerHub(registry *DockerHub) error
+		UpdateDockerHub(registry *DockerHub) error
 	}
 
 	// SettingsService represents a service for managing application settings.
 	SettingsService interface {
 		Settings() (*Settings, error)
-		StoreSettings(settings *Settings) error
+		UpdateSettings(settings *Settings) error
 	}
 
 	// VersionService represents a service for managing version data.
@@ -336,10 +478,35 @@ type (
 		DeleteResourceControl(ID ResourceControlID) error
 	}
 
+	// TagService represents a service for managing tag data.
+	TagService interface {
+		Tags() ([]Tag, error)
+		CreateTag(tag *Tag) error
+		DeleteTag(ID TagID) error
+	}
+
+	// TemplateService represents a service for managing template data.
+	TemplateService interface {
+		Templates() ([]Template, error)
+		Template(ID TemplateID) (*Template, error)
+		CreateTemplate(template *Template) error
+		UpdateTemplate(ID TemplateID, template *Template) error
+		DeleteTemplate(ID TemplateID) error
+	}
+
 	// CryptoService represents a service for encrypting/hashing data.
 	CryptoService interface {
 		Hash(data string) (string, error)
 		CompareHashAndData(hash string, data string) error
+	}
+
+	// DigitalSignatureService represents a service to manage digital signatures.
+	DigitalSignatureService interface {
+		ParseKeyPair(private, public []byte) error
+		GenerateKeyPair() ([]byte, []byte, error)
+		EncodedPublicKey() string
+		PEMHeaders() (string, string)
+		Sign(message string) (string, error)
 	}
 
 	// JWTService represents a service for managing JWT tokens.
@@ -350,20 +517,26 @@ type (
 
 	// FileService represents a service for managing files.
 	FileService interface {
-		GetFileContent(filePath string) (string, error)
+		GetFileContent(filePath string) ([]byte, error)
+		Rename(oldPath, newPath string) error
 		RemoveDirectory(directoryPath string) error
-		StoreTLSFile(folder string, fileType TLSFileType, r io.Reader) error
+		StoreTLSFileFromBytes(folder string, fileType TLSFileType, data []byte) (string, error)
 		GetPathForTLSFile(folder string, fileType TLSFileType) (string, error)
 		DeleteTLSFile(folder string, fileType TLSFileType) error
 		DeleteTLSFiles(folder string) error
 		GetStackProjectPath(stackIdentifier string) string
-		StoreStackFileFromString(stackIdentifier string, stackFileContent string) (string, error)
-		StoreStackFileFromReader(stackIdentifier string, r io.Reader) (string, error)
+		StoreStackFileFromBytes(stackIdentifier, fileName string, data []byte) (string, error)
+		KeyPairFilesExist() (bool, error)
+		StoreKeyPair(private, public []byte, privatePEMHeader, publicPEMHeader string) error
+		LoadKeyPair() ([]byte, []byte, error)
+		WriteJSONToFile(path string, content interface{}) error
+		FileExists(path string) (bool, error)
 	}
 
 	// GitService represents a service for managing Git.
 	GitService interface {
-		CloneRepository(url, destination string) error
+		ClonePublicRepository(repositoryURL, destination string) error
+		ClonePrivateRepositoryWithBasicAuth(repositoryURL, destination, username, password string) error
 	}
 
 	// EndpointWatcher represents a service to synchronize the endpoints via an external source.
@@ -377,20 +550,37 @@ type (
 		TestConnectivity(settings *LDAPSettings) error
 	}
 
-	// StackManager represents a service to manage stacks.
-	StackManager interface {
-		Deploy(stack *Stack, endpoint *Endpoint) error
+	// SwarmStackManager represents a service to manage Swarm stacks.
+	SwarmStackManager interface {
+		Login(dockerhub *DockerHub, registries []Registry, endpoint *Endpoint)
+		Logout(endpoint *Endpoint) error
+		Deploy(stack *Stack, prune bool, endpoint *Endpoint) error
 		Remove(stack *Stack, endpoint *Endpoint) error
+	}
+
+	// ComposeStackManager represents a service to manage Compose stacks.
+	ComposeStackManager interface {
+		Up(stack *Stack, endpoint *Endpoint) error
+		Down(stack *Stack, endpoint *Endpoint) error
 	}
 )
 
 const (
 	// APIVersion is the version number of the Portainer API.
-	APIVersion = "1.15.0"
+	APIVersion = "1.18.2-dev"
 	// DBVersion is the version number of the Portainer database.
-	DBVersion = 6
-	// DefaultTemplatesURL represents the default URL for the templates definitions.
-	DefaultTemplatesURL = "https://raw.githubusercontent.com/portainer/templates/master/templates.json"
+	DBVersion = 12
+	// PortainerAgentHeader represents the name of the header available in any agent response
+	PortainerAgentHeader = "Portainer-Agent"
+	// PortainerAgentTargetHeader represent the name of the header containing the target node name.
+	PortainerAgentTargetHeader = "X-PortainerAgent-Target"
+	// PortainerAgentSignatureHeader represent the name of the header containing the digital signature
+	PortainerAgentSignatureHeader = "X-PortainerAgent-Signature"
+	// PortainerAgentPublicKeyHeader represent the name of the header containing the public key
+	PortainerAgentPublicKeyHeader = "X-PortainerAgent-PublicKey"
+	// PortainerAgentSignatureMessage represents the message used to create a digital signature
+	// to be used when communicating with an agent
+	PortainerAgentSignatureMessage = "Portainer-App"
 )
 
 const (
@@ -446,4 +636,40 @@ const (
 	SecretResourceControl
 	// StackResourceControl represents a resource control associated to a stack composed of Docker services
 	StackResourceControl
+	// ConfigResourceControl represents a resource control associated to a Docker config
+	ConfigResourceControl
+)
+
+const (
+	_ EndpointExtensionType = iota
+	// StoridgeEndpointExtension represents the Storidge extension
+	StoridgeEndpointExtension
+)
+
+const (
+	_ EndpointType = iota
+	// DockerEnvironment represents an endpoint connected to a Docker environment
+	DockerEnvironment
+	// AgentOnDockerEnvironment represents an endpoint connected to a Portainer agent deployed on a Docker environment
+	AgentOnDockerEnvironment
+	// AzureEnvironment represents an endpoint connected to an Azure environment
+	AzureEnvironment
+)
+
+const (
+	_ StackType = iota
+	// DockerSwarmStack represents a stack managed via docker stack
+	DockerSwarmStack
+	// DockerComposeStack represents a stack managed via docker-compose
+	DockerComposeStack
+)
+
+const (
+	_ TemplateType = iota
+	// ContainerTemplate represents a container template
+	ContainerTemplate
+	// SwarmStackTemplate represents a template used to deploy a Swarm stack
+	SwarmStackTemplate
+	// ComposeStackTemplate represents a template used to deploy a Compose stack
+	ComposeStackTemplate
 )
