@@ -77,7 +77,7 @@
                 <div class="col-sm-12">
                   <span class="small">
                     <p class="text-primary">
-                      Manage the Docker environment where Portainer is running using the Unix filesystem socket.
+                      Manage the Docker environment where Portainer is running using the filesystem socket.
                     </p>
                     <p class="text-muted">
                       <i class="fa fa-exclamation-circle orange-icon" aria-hidden="true" style="margin-right: 2px;"></i>
@@ -86,6 +86,22 @@
                   </span>
                 </div>
               </div>
+                <div class="col-sm-12 form-section-title">
+                    Environment
+                </div>
+                <!-- win-checkbox -->
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <label for="win" class="control-label text-left">
+                            Use Windows containers
+                            <portainer-tooltip position="bottom" message="Enable this option if you are running Docker on Windows."></portainer-tooltip>
+                        </label>
+                        <label class="switch" style="margin-left: 20px;">
+                            <input type="checkbox" ng-model="formValues.Windows"><i></i>
+                        </label>
+                    </div>
+                </div>
+                <!-- !win-checkbox -->
               <!-- actions -->
               <div class="form-group">
                 <div class="col-sm-12">

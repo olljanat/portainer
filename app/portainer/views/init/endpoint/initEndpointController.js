@@ -30,11 +30,11 @@ function ($scope, $state, EndpointService, StateManager, EndpointProvider, Notif
 
   $scope.createLocalEndpoint = function() {
     var name = 'local';
-    var URL = 'unix:///var/run/docker.sock';
+    var Windows = $scope.formValues.Windows;
     var endpoint;
 
     $scope.state.actionInProgress = true;
-    EndpointService.createLocalEndpoint()
+    EndpointService.createLocalEndpoint(Windows)
     .then(function success(data) {
       endpoint = data;
       EndpointProvider.setEndpointID(endpoint.Id);
