@@ -12,6 +12,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/Microsoft/go-winio"
 	"github.com/asaskevich/govalidator"
 	"github.com/gorilla/websocket"
 	"github.com/koding/websocketproxy"
@@ -177,6 +178,10 @@ func createDial(endpoint *portainer.Endpoint) (net.Conn, error) {
 			return nil, err
 		}
 		return tls.Dial(url.Scheme, host, tlsConfig)
+	}
+
+	if url.Scheme == "npipe" {
+		return winio.DialPipe(host, nil)
 	}
 
 	return net.Dial(url.Scheme, host)
