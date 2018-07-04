@@ -56,11 +56,10 @@ function EndpointServiceFactory($q, Endpoints, FileUploadService) {
 
   service.createLocalEndpoint = function(Windows) {
     var deferred = $q.defer();
-   
+
+    var URL = 'unix:///var/run/docker.sock';
     if (Windows) {
-      var URL = 'npipe:////./pipe/docker_engine';
-    } else {
-      var URL = 'unix:///var/run/docker.sock';
+      URL = 'npipe:////./pipe/docker_engine';
     }
 
     FileUploadService.createEndpoint('local', 1, URL, '', 1, [], false)
