@@ -190,7 +190,7 @@ func (handler *Handler) createAzureEndpoint(payload *endpointCreatePayload) (*po
 func (handler *Handler) createUnsecuredEndpoint(payload *endpointCreatePayload) (*portainer.Endpoint, *httperror.HandlerError) {
 	endpointType := portainer.DockerEnvironment
 
-	if !strings.HasPrefix(payload.URL, "unix://") {
+	if !strings.HasPrefix(payload.URL, "unix://") && !strings.HasPrefix(payload.URL, "npipe://") {
 		agentOnDockerEnvironment, err := client.ExecutePingOperation(payload.URL, nil)
 		if err != nil {
 			return nil, &httperror.HandlerError{http.StatusInternalServerError, "Unable to ping Docker environment", err}

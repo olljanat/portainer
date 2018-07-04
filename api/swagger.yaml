@@ -3317,10 +3317,6 @@ definitions:
         type: "integer"
         example: "1"
         description: "Group identifier"
-      Local:
-        type: "boolean"
-        example: true
-        description: "Endpoint is local to the host (socket or named pipe)"
       TLS:
         type: "boolean"
         example: true
