@@ -100,4 +100,3 @@ func newSocketTransport(socketPath string) *http.Transport {
 		},
 	}
 }
-

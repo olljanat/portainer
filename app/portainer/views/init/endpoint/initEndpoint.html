@@ -79,9 +79,13 @@
                     <p class="text-primary">
                       Manage the Docker environment where Portainer is running using the filesystem socket.
                     </p>
-                    <p class="text-muted">
+                    <p class="text-muted" ng-if="!formValues.Windows">
                       <i class="fa fa-exclamation-circle orange-icon" aria-hidden="true" style="margin-right: 2px;"></i>
-                      Ensure that you have started the Portainer container with the following Docker flag: <code>-v "/var/run/docker.sock:/var/run/docker.sock"</code> (Linux) or <code>-v \\.\pipe\docker_engine:\\.\pipe\docker_engine</code> (Native Windows containers) in order to connect to the local Docker environment.
+                      Ensure that you have started the Portainer container with the following Docker flag: <code>-v "/var/run/docker.sock:/var/run/docker.sock"</code>.
+                    </p>
+                    <p class="text-muted" ng-if="formValues.Windows">
+                      <i class="fa fa-exclamation-circle orange-icon" aria-hidden="true" style="margin-right: 2px;"></i>
+                      Ensure that you have started the Portainer container with the following Docker flag: <code>-v \\.\pipe\docker_engine:\\.\pipe\docker_engine</code>.
                     </p>
                   </span>
                 </div>
@@ -93,7 +97,7 @@
                 <div class="form-group">
                     <div class="col-sm-12">
                         <label for="win" class="control-label text-left">
-                            Use Windows containers
+                            Windows containers
                             <portainer-tooltip position="bottom" message="Enable this option if you are running Docker on Windows."></portainer-tooltip>
                         </label>
                         <label class="switch" style="margin-left: 20px;">

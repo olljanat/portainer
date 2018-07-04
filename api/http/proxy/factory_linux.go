@@ -3,12 +3,10 @@
 package proxy
 
 import (
-        "net/http"
-
+	"net/http"
 )
 
 func (factory *proxyFactory) newNamedPipeProxy(path string) http.Handler {
-        proxy := &localProxy{}
-        return proxy
+	proxy := &localProxy{}
+	return proxy
 }
-

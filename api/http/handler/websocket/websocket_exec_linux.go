@@ -9,4 +9,3 @@ import (
 func createWinDial(host string) (net.Conn, error) {
 	return nil, nil
 }
-
