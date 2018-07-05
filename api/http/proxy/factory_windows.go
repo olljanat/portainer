@@ -12,9 +12,12 @@ import (
 func (factory *proxyFactory) newNamedPipeProxy(path string) http.Handler {
 	proxy := &localProxy{}
 	transport := &proxyTransport{
+		enableSignature:        false,
 		ResourceControlService: factory.ResourceControlService,
 		TeamMembershipService:  factory.TeamMembershipService,
 		SettingsService:        factory.SettingsService,
+		RegistryService:        factory.RegistryService,
+		DockerHubService:       factory.DockerHubService,
 		dockerTransport:        newNamedPipeTransport(path),
 	}
 	proxy.Transport = transport
