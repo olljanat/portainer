@@ -66,7 +66,7 @@ function ($q, $scope, $state, $transition$, $filter, EndpointService, GroupServi
       tags: TagService.tagNames()
     })
     .then(function success(data) {
-      var endpoint = data;
+      var endpoint = data.endpoint;
       if (endpoint.URL.indexOf('unix://') === 0 || endpoint.URL.indexOf('npipe://') === 0) {
         $scope.endpointType = 'local';
       } else {
