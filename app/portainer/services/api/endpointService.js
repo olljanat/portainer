@@ -54,11 +54,11 @@ function EndpointServiceFactory($q, Endpoints, FileUploadService) {
     return Endpoints.remove({id: endpointID}).$promise;
   };
 
-  service.createLocalEndpoint = function(Windows) {
+  service.createLocalEndpoint = function(useNamedPipe) {
     var deferred = $q.defer();
 
     var URL = 'unix:///var/run/docker.sock';
-    if (Windows) {
+    if (useNamedPipe) {
       URL = 'npipe:////./pipe/docker_engine';
     }
 

@@ -79,11 +79,11 @@
                     <p class="text-primary">
                       Manage the Docker environment where Portainer is running using the filesystem socket.
                     </p>
-                    <p class="text-muted" ng-if="!formValues.Windows">
+                    <p class="text-muted" ng-if="!formValues.useNamedPipe">
                       <i class="fa fa-exclamation-circle orange-icon" aria-hidden="true" style="margin-right: 2px;"></i>
                       Ensure that you have started the Portainer container with the following Docker flag: <code>-v "/var/run/docker.sock:/var/run/docker.sock"</code>.
                     </p>
-                    <p class="text-muted" ng-if="formValues.Windows">
+                    <p class="text-muted" ng-if="formValues.useNamedPipe">
                       <i class="fa fa-exclamation-circle orange-icon" aria-hidden="true" style="margin-right: 2px;"></i>
                       Ensure that you have started the Portainer container with the following Docker flag: <code>-v \\.\pipe\docker_engine:\\.\pipe\docker_engine</code>.
                     </p>

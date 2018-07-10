@@ -9,7 +9,7 @@ import (
 	"github.com/Microsoft/go-winio"
 )
 
-func (factory *proxyFactory) newNamedPipeProxy(path string) http.Handler {
+func (factory *proxyFactory) newLocalProxy(path string) http.Handler {
 	proxy := &localProxy{}
 	transport := &proxyTransport{
 		enableSignature:        false,

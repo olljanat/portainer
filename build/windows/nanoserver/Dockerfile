@@ -1,10 +1,10 @@
-ARG SOURCE_TAG=latest
-
-FROM microsoft/nanoserver:${SOURCE_TAG}
+FROM microsoft/nanoserver
 
 USER ContainerAdministrator
 
 COPY dist /
+
+VOLUME C:\\data
 
 WORKDIR /
 

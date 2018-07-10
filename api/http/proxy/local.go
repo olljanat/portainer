@@ -1,6 +1,5 @@
 package proxy
 
-// represents a handler to proxy HTTP requests via a unix:// socket and npipe:// named pipes
 import (
 	"io"
 	"log"

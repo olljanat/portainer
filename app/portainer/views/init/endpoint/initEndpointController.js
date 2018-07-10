@@ -30,11 +30,11 @@ function ($scope, $state, EndpointService, StateManager, EndpointProvider, Notif
 
   $scope.createLocalEndpoint = function() {
     var name = 'local';
-    var Windows = $scope.formValues.Windows;
+    var useNamedPipe = $scope.formValues.useNamedPipe;
     var endpoint;
 
     $scope.state.actionInProgress = true;
-    EndpointService.createLocalEndpoint(Windows)
+    EndpointService.createLocalEndpoint(useNamedPipe)
     .then(function success(data) {
       endpoint = data;
       EndpointProvider.setEndpointID(endpoint.Id);
