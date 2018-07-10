@@ -12,8 +12,8 @@ angular.module('portainer.docker')
     };
 
     if (type === 2) {
-      mode.provider = 'DOCKER_SWARM_MODE';
-      mode.role = 'MANAGER';
+      mode.provider = 'DOCKER_STANDALONE';
+      mode.role = '';
       mode.agentProxy = true;
       return mode;
     }
