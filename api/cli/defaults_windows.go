@@ -15,5 +15,5 @@ const (
 	defaultSSLCertPath     = "C:\\certs\\portainer.crt"
 	defaultSSLKeyPath      = "C:\\certs\\portainer.key"
 	defaultSyncInterval    = "60s"
-	defaultTemplateFile    = "/templates.json"
+	defaultTemplateFile    = "C:\\templates.json"
 )
