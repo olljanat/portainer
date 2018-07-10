@@ -46,7 +46,7 @@ angular.module('portainer.app')
     applyBoxCSS(box);
   };
 
-  service.customPrompt = function(options, optionToggled) {
+  service.customPrompt = function(options) {
     var box = bootbox.prompt({
       title: options.title,
       inputType: options.inputType,
@@ -56,7 +56,7 @@ angular.module('portainer.app')
     });
     applyBoxCSS(box);
     box.find('.bootbox-body').prepend('<p>' + options.message + '</p>');
-    box.find('.bootbox-input-checkbox').prop('checked', optionToggled);
+    box.find('.bootbox-input-checkbox').prop('checked', true);
   };
 
   service.confirmAccessControlUpdate = function(callback, msg) {
@@ -139,7 +139,7 @@ angular.module('portainer.app')
         }
       },
       callback: callback
-    }, false);
+    });
   };
 
   service.confirmExperimentalFeature = function(callback) {
@@ -174,7 +174,7 @@ angular.module('portainer.app')
         }
       },
       callback: callback
-    }, false);
+    });
   };
 
   return service;
