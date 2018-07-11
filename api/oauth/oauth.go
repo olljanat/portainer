@@ -14,6 +14,13 @@ type Service struct{}
 // AuthenticateUser is used to authenticate a user against a OAuth.
 func (*Service) AuthenticateUser(username string, settings *portainer.OAuthSettings) error {
 
-	err := errors.New("oauth.go - OAuth authentication is not yet implemented")
+	err := errors.New("oauth.go - AuthenticateUser is not yet implemented")
+	return err
+}
+
+// TestConnectivity is used to test a connection against the OAuth server using the credentials
+// specified in the OAuthSettings.
+func (*Service) TestConnectivity(settings *portainer.OAuthSettings) error {
+	err := errors.New("oauth.go - TestConnectivity is not yet implemented")
 	return err
 }

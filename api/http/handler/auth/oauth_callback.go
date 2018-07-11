@@ -1,5 +1,19 @@
-package oauth
+package auth
 
+import (
+	"net/http"
+
+	//"github.com/portainer/portainer"
+	// httperror "github.com/portainer/portainer/http/error"
+	// "github.com/portainer/portainer/http/response"
+)
+
+// GET request on /api/oauth/callback
+func (handler *Handler) oauthCallback(w http.ResponseWriter, r *http.Request) *httperror.HandlerError {
+	return nil
+}
+
+/* 
 import (
 	"encoding/json"
 	"log"
@@ -84,3 +98,4 @@ func main() {
 		w.Write(data)
 	})
 }
+*/

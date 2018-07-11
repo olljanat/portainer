@@ -37,6 +37,7 @@ func NewHandler(bouncer *security.RequestBouncer, rateLimiter *security.RateLimi
 	}
 	h.Handle("/auth",
 		rateLimiter.LimitAccess(bouncer.PublicAccess(httperror.LoggerHandler(h.authenticate)))).Methods(http.MethodPost)
-
+	h.Handle("/oauth/callback",
+		rateLimiter.LimitAccess(bouncer.PublicAccess(httperror.LoggerHandler(h.oauthCallback)))).Methods(http.MethodGet)
 	return h
 }
