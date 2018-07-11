@@ -14,9 +14,9 @@ import (
 type settingsUpdatePayload struct {
 	LogoURL                            *string
 	BlackListedLabels                  []portainer.Pair
-	AuthenticationMethod               int
-	LDAPSettings                       portainer.LDAPSettings
-	OAuthSettings                      portainer.OAuthSettings
+	AuthenticationMethod               *int
+	LDAPSettings                       *portainer.LDAPSettings
+	OAuthSettings                      *portainer.OAuthSettings
 	AllowBindMountsForRegularUsers     *bool
 	AllowPrivilegedModeForRegularUsers *bool
 	SnapshotInterval                   *string
@@ -62,6 +62,10 @@ func (handler *Handler) settingsUpdate(w http.ResponseWriter, r *http.Request) *
 
 	if payload.LDAPSettings != nil {
 		settings.LDAPSettings = *payload.LDAPSettings
+	}
+
+	if payload.OAuthSettings != nil {
+		settings.OAuthSettings = *payload.OAuthSettings
 	}
 
 	if payload.AllowBindMountsForRegularUsers != nil {
