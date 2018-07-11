@@ -108,18 +108,8 @@ func (*Service) ValidateFlags(flags *portainer.CLIFlags) error {
 
 func validateEndpointURL(endpointURL string) error {
 	if endpointURL != "" {
-		if !strings.HasPrefix(endpointURL, "unix://") && !strings.HasPrefix(endpointURL, "tcp://") && !strings.HasPrefix(endpointURL, "npipe://") {
+		if !strings.HasPrefix(endpointURL, "tcp://") {
 			return errInvalidEndpointProtocol
-		}
-
-		if strings.HasPrefix(endpointURL, "unix://") {
-			socketPath := strings.TrimPrefix(endpointURL, "unix://")
-			if _, err := os.Stat(socketPath); err != nil {
-				if os.IsNotExist(err) {
-					return errSocketNotFound
-				}
-				return err
-			}
 		}
 	}
 	return nil
