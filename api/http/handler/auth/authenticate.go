@@ -70,8 +70,6 @@ func (handler *Handler) authenticate(w http.ResponseWriter, r *http.Request) *ht
 		if err != nil {
 			return &httperror.HandlerError{http.StatusInternalServerError, "Unable to authenticate user via OAuth", err}
 		}
-	} else {
-		err = errors.New("authenticate.go - OAuth authentication is not yet implemented")
 	}
 	
 	tokenData := &portainer.TokenData{
