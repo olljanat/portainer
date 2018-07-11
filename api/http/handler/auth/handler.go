@@ -25,6 +25,7 @@ type Handler struct {
 	CryptoService   portainer.CryptoService
 	JWTService      portainer.JWTService
 	LDAPService     portainer.LDAPService
+	OAuthService    portainer.OAuthService
 	SettingsService portainer.SettingsService
 }
 

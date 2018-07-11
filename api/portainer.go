@@ -67,12 +67,22 @@ type (
 		UserNameAttribute string `json:"UserNameAttribute"`
 	}
 
+	// OAuthSettings represents the settings used to connect to a OAuth server.
+	OAuthSettings struct {
+		IdpUrl       string                 `json:"IdpUrl"`
+		ClientID       string               `json:"ClientID"`
+		ClientSecret            string               `json:"ClientSecret"`
+		RedirectURL      string     `json:"RedirectURL"`
+		Scopes       string                 `json:"Scopes"`
+	}
+	
 	// Settings represents the application settings.
 	Settings struct {
 		LogoURL                            string               `json:"LogoURL"`
 		BlackListedLabels                  []Pair               `json:"BlackListedLabels"`
 		AuthenticationMethod               AuthenticationMethod `json:"AuthenticationMethod"`
 		LDAPSettings                       LDAPSettings         `json:"LDAPSettings"`
+		OAuthSettings                      OAuthSettings        `json:"OAuthSettings"`
 		AllowBindMountsForRegularUsers     bool                 `json:"AllowBindMountsForRegularUsers"`
 		AllowPrivilegedModeForRegularUsers bool                 `json:"AllowPrivilegedModeForRegularUsers"`
 		// Deprecated fields
@@ -549,6 +559,12 @@ type (
 		AuthenticateUser(username, password string, settings *LDAPSettings) error
 		TestConnectivity(settings *LDAPSettings) error
 	}
+	
+	// OAuthService represents a service used to federate users against a OAuth IDP.
+	OAuthService interface {
+		AuthenticateUser(username string, settings *OAuthSettings) error
+		TestConnectivity(settings *OAuthSettings) error
+	}
 
 	// SwarmStackManager represents a service to manage Swarm stacks.
 	SwarmStackManager interface {
@@ -614,6 +630,8 @@ const (
 	AuthenticationInternal
 	// AuthenticationLDAP represents the LDAP authentication method (authentication against a LDAP server)
 	AuthenticationLDAP
+	// AuthenticationOAuth represents the OAuth method (federation against a external IDP server)
+	AuthenticationOAuth
 )
 
 const (

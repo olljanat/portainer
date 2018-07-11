@@ -97,6 +97,10 @@ func initLDAPService() portainer.LDAPService {
 	return &ldap.Service{}
 }
 
+func initOAuthService() portainer.OAuthService {
+	return &oauth.Service{}
+}
+
 func initGitService() portainer.GitService {
 	return &git.Service{}
 }
@@ -152,6 +156,7 @@ func initSettings(settingsService portainer.SettingsService, flags *portainer.CL
 					portainer.LDAPSearchSettings{},
 				},
 			},
+			OAuthSettings: portainer.OAuthSettings,
 			AllowBindMountsForRegularUsers:     true,
 			AllowPrivilegedModeForRegularUsers: true,
 		}
@@ -363,6 +368,8 @@ func main() {
 	digitalSignatureService := initDigitalSignatureService()
 
 	ldapService := initLDAPService()
+	
+	oauthService := initOAuthService()
 
 	gitService := initGitService()
 
@@ -462,6 +469,7 @@ func main() {
 		JWTService:             jwtService,
 		FileService:            fileService,
 		LDAPService:            ldapService,
+		OAuthService:           oauthService,
 		GitService:             gitService,
 		SignatureService:       digitalSignatureService,
 		SSL:                    *flags.SSL,

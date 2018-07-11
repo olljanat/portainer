@@ -37,6 +37,16 @@
                   <p>LDAP authentication</p>
                 </label>
               </div>
+              <div>
+                <input type="radio" id="registry_oauth" ng-model="settings.AuthenticationMethod" ng-value="3">
+                <label for="registry_oauth">
+                  <div class="boxselector_header">
+                    <i class="fa fa-users" aria-hidden="true" style="margin-right: 2px;"></i>
+                    OAuth
+                  </div>
+                  <p>OAuth</p>
+                </label>
+              </div>
             </div>
           </div>
           <div class="col-sm-12 form-section-title">
@@ -50,6 +60,15 @@
           <div class="form-group" ng-if="settings.AuthenticationMethod === 2">
             <span class="col-sm-12 text-muted small">
               When using LDAP authentication, Portainer will delegate user authentication to a LDAP server (exception for the <b>admin</b> user that always uses internal authentication).
+              <p style="margin-top:5px;">
+                <i class="fa fa-exclamation-triangle orange-icon" aria-hidden="true" style="margin-right: 2px;"></i>
+                <u>Users still need to be created in Portainer beforehand.</u>
+              </p>
+            </span>
+          </div>
+          <div class="form-group" ng-if="settings.AuthenticationMethod === 3">
+            <span class="col-sm-12 text-muted small">
+              When using OAuth, Portainer will delegate user authentication to a OAuth IDP (exception for the <b>admin</b> user that always uses internal authentication).
               <p style="margin-top:5px;">
                 <i class="fa fa-exclamation-triangle orange-icon" aria-hidden="true" style="margin-right: 2px;"></i>
                 <u>Users still need to be created in Portainer beforehand.</u>
@@ -234,6 +253,61 @@
               </div>
 
             </div>
+            <!-- !search-settings -->
+          </div>
+		  
+          <div ng-if="settings.AuthenticationMethod === 3">
+            <div class="col-sm-12 form-section-title">
+              OAuth configuration
+            </div>
+
+            <div class="form-group">
+              <label for="oauth_idpurl" class="col-sm-3 col-lg-2 control-label text-left">
+                IDP URL
+                <portainer-tooltip position="bottom" message="URL of the IDP server."></portainer-tooltip>
+              </label>
+              <div class="col-sm-9 col-lg-10">
+                <input type="text" class="form-control" id="oauth_idpurl" ng-model="OAuthSettings.IdpUrl" placeholder="https://idp.example.com">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="oauth_clientid" class="col-sm-3 col-lg-2 control-label text-left">
+                Client ID
+                <portainer-tooltip position="bottom" message="OAuth client ID"></portainer-tooltip>
+              </label>
+              <div class="col-sm-9 col-lg-10">
+                <input type="text" class="form-control" id="oauth_clientid" ng-model="OAuthSettings.ClientID" placeholder="00000000-0000-0000-0000-000000000000">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="oauth_clientsecret" class="col-sm-3 col-lg-2 control-label text-left">
+                Client Secret
+              </label>
+              <div class="col-sm-9 col-lg-10">
+                <input type="ClientSecret" class="form-control" id="oauth_clientsecret" ng-model="OAuthSettings.ClientSecret" placeholder="secret">
+              </div>
+            </div>
+			
+            <div class="form-group">
+              <label for="oauth_redirecturl" class="col-sm-3 col-lg-2 control-label text-left">
+                Redirect URL
+              </label>
+              <div class="col-sm-9 col-lg-10">
+                <input type="RedirectURL" class="form-control" id="oauth_clientsecret" ng-model="OAuthSettings.RedirectURL" placeholder="https://portainer.example.com">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="oauth_scopes" class="col-sm-3 col-lg-2 control-label text-left">
+                Scopes (space sparated list)
+              </label>
+              <div class="col-sm-9 col-lg-10">
+                <input type="Scopes" class="form-control" id="oauth_scopes" ng-model="OAuthSettings.Scopes" placeholder="profile email">
+              </div>
+            </div>
+			
             <!-- !search-settings -->
           </div>
 

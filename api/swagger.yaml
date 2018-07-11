@@ -2834,7 +2834,7 @@ definitions:
       AuthenticationMethod:
         type: "integer"
         example: 1
-        description: "Active authentication method for the Portainer instance. Valid values are: 1 for managed or 2 for LDAP."
+        description: "Active authentication method for the Portainer instance. Valid values are: 1 for managed, 2 for LDAP and 3 for OAuth."
       AllowBindMountsForRegularUsers:
         type: "boolean"
         example: false
@@ -2922,6 +2922,29 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/LDAPSearchSettings"
+  OAuthSettings:
+    type: "object"
+    properties:
+      IdpUrl:
+        type: "string"
+        example: "https://idp.example.com"
+        description: "URL of the IDP server."
+      ClientID:
+        type: "string"
+        example: "00000000-0000-0000-0000-000000000000"
+        description: "OAuth client ID"
+      ClientSecret:
+        type: "string"
+        example: "client-secret"
+        description: "Client Secret"
+      RedirectURL:
+        type: "string"
+        example: "https://portainer.example.com"
+        description: "Redirect URL"
+      Scopes:
+        type: "string"
+        example: "profile email"
+        description: "Space sparated list of scopes"
 
   Settings:
     type: "object"

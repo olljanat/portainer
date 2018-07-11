@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/asaskevich/govalidator"
@@ -64,6 +65,15 @@ func (handler *Handler) authenticate(w http.ResponseWriter, r *http.Request) *ht
 		}
 	}
 
+	if settings.AuthenticationMethod == portainer.AuthenticationOAuth && u.ID != 1 {
+		err = handler.OAuthService.AuthenticateUser(payload.Username, &settings.OAuthSettings)
+		if err != nil {
+			return &httperror.HandlerError{http.StatusInternalServerError, "Unable to authenticate user via OAuth", err}
+		}
+	} else {
+		err = errors.New("authenticate.go - OAuth authentication is not yet implemented")
+	}
+	
 	tokenData := &portainer.TokenData{
 		ID:       u.ID,
 		Username: u.Username,

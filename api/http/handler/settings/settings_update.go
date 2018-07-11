@@ -16,6 +16,7 @@ type settingsUpdatePayload struct {
 	BlackListedLabels                  []portainer.Pair
 	AuthenticationMethod               int
 	LDAPSettings                       portainer.LDAPSettings
+	OAuthSettings                      portainer.OAuthSettings
 	AllowBindMountsForRegularUsers     bool
 	AllowPrivilegedModeForRegularUsers bool
 }
@@ -24,8 +25,8 @@ func (payload *settingsUpdatePayload) Validate(r *http.Request) error {
 	if payload.AuthenticationMethod == 0 {
 		return portainer.Error("Invalid authentication method")
 	}
-	if payload.AuthenticationMethod != 1 && payload.AuthenticationMethod != 2 {
-		return portainer.Error("Invalid authentication method value. Value must be one of: 1 (internal) or 2 (LDAP/AD)")
+	if payload.AuthenticationMethod != 1 && payload.AuthenticationMethod != 2 && payload.AuthenticationMethod != 3 {
+		return portainer.Error("Invalid authentication method value. Value must be one of: 1 (internal), 2 (LDAP/AD) or 3 (OAuth)")
 	}
 	if !govalidator.IsNull(payload.LogoURL) && !govalidator.IsURL(payload.LogoURL) {
 		return portainer.Error("Invalid logo URL. Must correspond to a valid URL format")
@@ -45,6 +46,7 @@ func (handler *Handler) settingsUpdate(w http.ResponseWriter, r *http.Request) *
 		LogoURL:                            payload.LogoURL,
 		BlackListedLabels:                  payload.BlackListedLabels,
 		LDAPSettings:                       payload.LDAPSettings,
+		OAuthSettings:                      payload.OAuthSettings,
 		AllowBindMountsForRegularUsers:     payload.AllowBindMountsForRegularUsers,
 		AllowPrivilegedModeForRegularUsers: payload.AllowPrivilegedModeForRegularUsers,
 	}
