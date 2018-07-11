@@ -1,37 +1,21 @@
 package auth
 
 import (
-	"net/http"
-
-	//"github.com/portainer/portainer"
-	// httperror "github.com/portainer/portainer/http/error"
-	// "github.com/portainer/portainer/http/response"
-)
-
-// GET request on /api/oauth/callback
-func (handler *Handler) oauthCallback(w http.ResponseWriter, r *http.Request) *httperror.HandlerError {
-	return nil
-}
-
-/* 
-import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
-	"os"
 
 	oidc "github.com/coreos/go-oidc"
 
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
+
+	httperror "github.com/portainer/portainer/http/error"
 )
 
-var (
-	clientID     = os.Getenv("GOOGLE_OAUTH2_CLIENT_ID")
-	clientSecret = os.Getenv("GOOGLE_OAUTH2_CLIENT_SECRET")
-)
-
-func main() {
+// GET request on /api/oauth/callback
+func (handler *Handler) oauthCallback(w http.ResponseWriter, r *http.Request) *httperror.HandlerError {
 	ctx := context.Background()
 
 	provider, err := oidc.NewProvider(ctx, "https://accounts.google.com")
@@ -50,52 +34,41 @@ func main() {
 		RedirectURL:  "http://127.0.0.1:9000/auth/oauth/callback",
 		Scopes:       []string{oidc.ScopeOpenID, "profile", "email"},
 	}
-
 	state := "foobar" // Don't do this in production.
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, config.AuthCodeURL(state), http.StatusFound)
-	})
+	if r.URL.Query().Get("state") != state {
+		err := errors.New("STATE ERROR")
+		return &httperror.HandlerError{http.StatusBadRequest, "state did not match", err}
+	}
 
-	http.HandleFunc("/auth/oauth/callback", func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Query().Get("state") != state {
-			http.Error(w, "state did not match", http.StatusBadRequest)
-			return
-		}
+	oauth2Token, err := config.Exchange(ctx, r.URL.Query().Get("code"))
+	if err != nil {
+		return &httperror.HandlerError{http.StatusInternalServerError, "Failed to exchange token", err}
+	}
+	rawIDToken, ok := oauth2Token.Extra("id_token").(string)
+	if !ok {
+		return &httperror.HandlerError{http.StatusInternalServerError, "No id_token field in oauth2 token.", err}
+	}
+	idToken, err := verifier.Verify(ctx, rawIDToken)
+	if err != nil {
+		return &httperror.HandlerError{http.StatusInternalServerError, "Failed to verify ID Token:", err}
+	}
 
-		oauth2Token, err := config.Exchange(ctx, r.URL.Query().Get("code"))
-		if err != nil {
-			http.Error(w, "Failed to exchange token: "+err.Error(), http.StatusInternalServerError)
-			return
-		}
-		rawIDToken, ok := oauth2Token.Extra("id_token").(string)
-		if !ok {
-			http.Error(w, "No id_token field in oauth2 token.", http.StatusInternalServerError)
-			return
-		}
-		idToken, err := verifier.Verify(ctx, rawIDToken)
-		if err != nil {
-			http.Error(w, "Failed to verify ID Token: "+err.Error(), http.StatusInternalServerError)
-			return
-		}
+	oauth2Token.AccessToken = "*REDACTED*"
 
-		oauth2Token.AccessToken = "*REDACTED*"
+	resp := struct {
+		OAuth2Token   *oauth2.Token
+		IDTokenClaims *json.RawMessage // ID Token payload is just JSON.
+	}{oauth2Token, new(json.RawMessage)}
 
-		resp := struct {
-			OAuth2Token   *oauth2.Token
-			IDTokenClaims *json.RawMessage // ID Token payload is just JSON.
-		}{oauth2Token, new(json.RawMessage)}
+	if err := idToken.Claims(&resp.IDTokenClaims); err != nil {
+		return &httperror.HandlerError{http.StatusInternalServerError, "idToken.Claims: ", err}
+	}
+	data, err := json.MarshalIndent(resp, "", "    ")
+	if err != nil {
+		return &httperror.HandlerError{http.StatusInternalServerError, "json.MarshalIndent: ", err}
+	}
+	w.Write(data)
 
-		if err := idToken.Claims(&resp.IDTokenClaims); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		data, err := json.MarshalIndent(resp, "", "    ")
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.Write(data)
-	})
+	return nil
 }
-*/
