@@ -18,6 +18,7 @@ import (
 	"github.com/portainer/portainer/jwt"
 	"github.com/portainer/portainer/ldap"
 	"github.com/portainer/portainer/libcompose"
+	"github.com/portainer/portainer/oauth"
 
 	"log"
 )
@@ -98,6 +99,10 @@ func initLDAPService() portainer.LDAPService {
 	return &ldap.Service{}
 }
 
+func initOAuthService() portainer.OAuthService {
+	return &oauth.Service{}
+}
+
 func initGitService() portainer.GitService {
 	return &git.Service{}
 }
@@ -165,6 +170,7 @@ func initSettings(settingsService portainer.SettingsService, flags *portainer.CL
 					portainer.LDAPSearchSettings{},
 				},
 			},
+			OAuthSettings:                      portainer.OAuthSettings{},
 			AllowBindMountsForRegularUsers:     true,
 			AllowPrivilegedModeForRegularUsers: true,
 			SnapshotInterval:                   *flags.SnapshotInterval,
@@ -382,6 +388,8 @@ func main() {
 
 	ldapService := initLDAPService()
 
+	oauthService := initOAuthService()
+
 	gitService := initGitService()
 
 	clientFactory := initClientFactory(digitalSignatureService)
@@ -492,6 +500,7 @@ func main() {
 		JWTService:             jwtService,
 		FileService:            fileService,
 		LDAPService:            ldapService,
+		OAuthService:           oauthService,
 		GitService:             gitService,
 		SignatureService:       digitalSignatureService,
 		JobScheduler:           jobScheduler,

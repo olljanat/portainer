@@ -48,6 +48,7 @@ type Server struct {
 	GitService             portainer.GitService
 	JWTService             portainer.JWTService
 	LDAPService            portainer.LDAPService
+	OAuthService           portainer.OAuthService
 	RegistryService        portainer.RegistryService
 	ResourceControlService portainer.ResourceControlService
 	SettingsService        portainer.SettingsService
@@ -90,6 +91,7 @@ func (server *Server) Start() error {
 	authHandler.CryptoService = server.CryptoService
 	authHandler.JWTService = server.JWTService
 	authHandler.LDAPService = server.LDAPService
+	authHandler.OAuthService = server.OAuthService
 	authHandler.SettingsService = server.SettingsService
 
 	var dockerHubHandler = dockerhub.NewHandler(requestBouncer)
@@ -120,6 +122,7 @@ func (server *Server) Start() error {
 	var settingsHandler = settings.NewHandler(requestBouncer)
 	settingsHandler.SettingsService = server.SettingsService
 	settingsHandler.LDAPService = server.LDAPService
+	settingsHandler.OAuthService = server.OAuthService
 	settingsHandler.FileService = server.FileService
 	settingsHandler.JobScheduler = server.JobScheduler
 

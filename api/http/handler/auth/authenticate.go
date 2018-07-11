@@ -64,6 +64,13 @@ func (handler *Handler) authenticate(w http.ResponseWriter, r *http.Request) *ht
 		}
 	}
 
+	if settings.AuthenticationMethod == portainer.AuthenticationOAuth && u.ID != 1 {
+		err = handler.OAuthService.AuthenticateUser(payload.Username, &settings.OAuthSettings)
+		if err != nil {
+			return &httperror.HandlerError{http.StatusInternalServerError, "Unable to authenticate user via OAuth", err}
+		}
+	}
+
 	tokenData := &portainer.TokenData{
 		ID:       u.ID,
 		Username: u.Username,
