@@ -2,7 +2,6 @@ package oauth
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/coreos/go-oidc"
