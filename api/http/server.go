@@ -40,6 +40,7 @@ type Server struct {
 	ComposeStackManager    portainer.ComposeStackManager
 	CryptoService          portainer.CryptoService
 	SignatureService       portainer.DigitalSignatureService
+	JobScheduler           portainer.JobScheduler
 	DockerHubService       portainer.DockerHubService
 	EndpointService        portainer.EndpointService
 	EndpointGroupService   portainer.EndpointGroupService
@@ -123,6 +124,7 @@ func (server *Server) Start() error {
 	settingsHandler.LDAPService = server.LDAPService
 	settingsHandler.OAuthService = server.OAuthService
 	settingsHandler.FileService = server.FileService
+	settingsHandler.JobScheduler = server.JobScheduler
 
 	var stackHandler = stacks.NewHandler(requestBouncer)
 	stackHandler.FileService = server.FileService

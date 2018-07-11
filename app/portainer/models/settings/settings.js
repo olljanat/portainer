@@ -6,4 +6,5 @@ function SettingsViewModel(data) {
   this.OAuthSettings = data.OAuthSettings;
   this.AllowBindMountsForRegularUsers = data.AllowBindMountsForRegularUsers;
   this.AllowPrivilegedModeForRegularUsers = data.AllowPrivilegedModeForRegularUsers;
+  this.SnapshotInterval = data.SnapshotInterval;
 }

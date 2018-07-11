@@ -123,6 +123,10 @@ a[ng-click]{
   color: #337ab7;
 }
 
+.text-warning {
+  color: #f0ad4e;
+}
+
 .widget .widget-body table tbody .image-tag {
   font-size: 90% !important;
   margin-right: 5px;
@@ -311,8 +315,10 @@ ul.sidebar .sidebar-title {
   height: auto;
 }
 
-ul.sidebar .sidebar-title .endpoint-name {
+ul.sidebar .sidebar-title.endpoint-name {
   color: #fff;
+  text-align: center;
+  text-indent: 0;
 }
 
 ul.sidebar .sidebar-list a {
@@ -715,10 +721,13 @@ ul.sidebar .sidebar-list .sidebar-sublist a.active {
 .log_viewer {
   height:100%;
   overflow-y: scroll;
-  white-space: pre-wrap;
   color: black;
   font-size: .85em;
   background-color: white;
+}
+
+.log_viewer.wrap_lines {
+  white-space: pre-wrap;
 }
 
 .log_viewer .inner_line {
