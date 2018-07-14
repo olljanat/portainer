@@ -49,7 +49,7 @@ func (handler *Handler) authenticate(w http.ResponseWriter, r *http.Request) *ht
 
 	if settings.AuthenticationMethod == portainer.AuthenticationLDAP {
 		tokenData, err = handler.LDAPService.AuthenticateUser(payload.Username, payload.Password, &settings.LDAPSettings)
-		if err != nil && err != portainer.Error("LdapUserNotFound") {
+		if err != nil && err != portainer.ErrInvalidUsername {
 			return &httperror.HandlerError{http.StatusInternalServerError, "Unable to authenticate user via LDAP/AD", err}
 		}
 	}

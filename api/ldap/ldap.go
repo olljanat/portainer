@@ -46,7 +46,7 @@ func searchUser(username string, conn *ldap.Conn, settings []portainer.LDAPSearc
 	}
 
 	if !found {
-		return "", portainer.Error("LdapUserNotFound")
+		return "", portainer.ErrInvalidUsername
 	}
 
 	return userDN, nil
@@ -83,6 +83,7 @@ func createConnection(settings *portainer.LDAPSettings) (*ldap.Conn, error) {
 
 // AuthenticateUser is used to authenticate a user against a LDAP/AD.
 func (service *Service) AuthenticateUser(username, password string, settings *portainer.LDAPSettings) (*portainer.TokenData, error) {
+	tokenData := &portainer.TokenData{}
 
 	connection, err := createConnection(settings)
 	if err != nil {
@@ -100,36 +101,38 @@ func (service *Service) AuthenticateUser(username, password string, settings *po
 		return nil, err
 	}
 
-	/*
-		if err != nil {
-			if err == ErrUserNotFound {
-				user := &portainer.User{
-					Username: username,
-					Role:     portainer.StandardUserRole,
-				}
-
-				err := service.UserService.CreateUser(user)
-				if err != nil {
-					return err
-				}
-
-				err := service.addLdapUserIntoTeams(user, settings)
-				if err != nil {
-					return err
-				}
-
-			} else {
-				return err
-			}
-		}
-	*/
-
 	err = connection.Bind(userDN, password)
 	if err != nil {
 		return nil, err
 	}
 
-	return nil, nil
+	u, err := service.UserService.UserByUsername(username)
+	if err == portainer.ErrObjectNotFound {
+		user := &portainer.User{
+			Username: username,
+			Role:     portainer.StandardUserRole,
+		}
+
+		err = service.UserService.CreateUser(user)
+		if err != nil {
+			return nil, err
+		}
+
+		err = service.addLdapUserIntoTeams(user, settings)
+		if err != nil {
+			return nil, err
+		}
+
+		u, err = service.UserService.UserByUsername(username)
+	}
+
+	tokenData = &portainer.TokenData{
+		ID:       u.ID,
+		Username: u.Username,
+		Role:     u.Role,
+	}
+
+	return tokenData, nil
 }
 
 // GetUserGroups is used to retrieve user groups from LDAP/AD.
