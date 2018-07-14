@@ -30,6 +30,8 @@ func (payload *authenticatePayload) Validate(r *http.Request) error {
 }
 
 func (handler *Handler) authenticate(w http.ResponseWriter, r *http.Request) *httperror.HandlerError {
+	tokenData := &portainer.TokenData{}
+
 	if handler.authDisabled {
 		return &httperror.HandlerError{http.StatusServiceUnavailable, "Cannot authenticate user. Portainer was started with the --no-auth flag", ErrAuthDisabled}
 	}
@@ -40,29 +42,34 @@ func (handler *Handler) authenticate(w http.ResponseWriter, r *http.Request) *ht
 		return &httperror.HandlerError{http.StatusBadRequest, "Invalid request payload", err}
 	}
 
-	u, err := handler.UserService.UserByUsername(payload.Username)
-	if err == portainer.ErrObjectNotFound {
-		return &httperror.HandlerError{http.StatusBadRequest, "Invalid credentials", ErrInvalidCredentials}
-	} else if err != nil {
-		return &httperror.HandlerError{http.StatusInternalServerError, "Unable to retrieve a user with the specified username from the database", err}
-	}
-
 	settings, err := handler.SettingsService.Settings()
 	if err != nil {
 		return &httperror.HandlerError{http.StatusInternalServerError, "Unable to retrieve settings from the database", err}
 	}
 
-	if settings.AuthenticationMethod == portainer.AuthenticationLDAP && u.ID != 1 {
-		err = handler.LDAPService.AuthenticateUser(payload.Username, payload.Password, &settings.LDAPSettings)
+	if settings.AuthenticationMethod == portainer.AuthenticationLDAP {
+		tokenData, err = handler.LDAPService.AuthenticateUser(payload.Username, payload.Password, &settings.LDAPSettings)
 		if err != nil {
 			return &httperror.HandlerError{http.StatusInternalServerError, "Unable to authenticate user via LDAP/AD", err}
 		}
-	}
+	} else {
+		u, err := handler.UserService.UserByUsername(payload.Username)
+		if err == portainer.ErrObjectNotFound {
+			return &httperror.HandlerError{http.StatusBadRequest, "Invalid credentials", ErrInvalidCredentials}
+		} else if err != nil {
+			return &httperror.HandlerError{http.StatusInternalServerError, "Unable to retrieve a user with the specified username from the database", err}
+		}
 
-	tokenData := &portainer.TokenData{
-		ID:       u.ID,
-		Username: u.Username,
-		Role:     u.Role,
+		err = handler.CryptoService.CompareHashAndData(u.Password, payload.Password)
+		if err != nil {
+			return &httperror.HandlerError{http.StatusUnprocessableEntity, "Invalid credentials", ErrInvalidCredentials}
+		}
+
+		tokenData = &portainer.TokenData{
+			ID:       u.ID,
+			Username: u.Username,
+			Role:     u.Role,
+		}
 	}
 
 	token, err := handler.JWTService.GenerateToken(tokenData)

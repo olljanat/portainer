@@ -19,7 +19,7 @@ const (
 // Service represents a service used to authenticate users against a LDAP/AD.
 type Service struct {
 	UserService           portainer.UserService
-	CryptoService   portainer.CryptoService
+	CryptoService         portainer.CryptoService
 	LDAPService           portainer.LDAPService
 	TeamService           portainer.TeamService
 	TeamMembershipService portainer.TeamMembershipService
@@ -88,59 +88,54 @@ func createConnection(settings *portainer.LDAPSettings) (*ldap.Conn, error) {
 }
 
 // AuthenticateUser is used to authenticate a user against a LDAP/AD.
-func (service *Service) AuthenticateUser(username, password string, settings *portainer.LDAPSettings) error {
+func (service *Service) AuthenticateUser(username, password string, settings *portainer.LDAPSettings) (*portainer.TokenData, error) {
 
 	connection, err := createConnection(settings)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer connection.Close()
 
 	err = connection.Bind(settings.ReaderDN, settings.Password)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	userDN, err := searchUser(username, connection, settings.SearchSettings)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	
+
 	/*
-	if err != nil {
-		if err == ErrUserNotFound {
-			user := &portainer.User{
-				Username: username,
-				Role:     portainer.StandardUserRole,
-			}
+		if err != nil {
+			if err == ErrUserNotFound {
+				user := &portainer.User{
+					Username: username,
+					Role:     portainer.StandardUserRole,
+				}
 
-			err := service.UserService.CreateUser(user)
-			if err != nil {
+				err := service.UserService.CreateUser(user)
+				if err != nil {
+					return err
+				}
+
+				err := service.addLdapUserIntoTeams(user, settings)
+				if err != nil {
+					return err
+				}
+
+			} else {
 				return err
 			}
-
-			err := service.addLdapUserIntoTeams(user, settings)
-			if err != nil {
-				return err
-			}
-
-		} else {
-			return err
 		}
-	}
 	*/
 
 	err = connection.Bind(userDN, password)
 	if err != nil {
-		return err
-	}
-	
-	err = service.CryptoService.CompareHashAndData(u.Password, payload.Password)
-	if err != nil {
-		return &httperror.HandlerError{http.StatusUnprocessableEntity, "Invalid credentials", ErrInvalidCredentials}
+		return nil, err
 	}
 
-	return nil
+	return nil, nil
 }
 
 // GetUserGroups is used to retrieve user groups from LDAP/AD.
