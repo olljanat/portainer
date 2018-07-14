@@ -17,7 +17,12 @@ const (
 )
 
 // Service represents a service used to authenticate users against a LDAP/AD.
-type Service struct{}
+type Service struct{
+	UserService           portainer.UserService
+	LDAPService           portainer.LDAPService
+	TeamService           portainer.TeamService
+	TeamMembershipService portainer.TeamMembershipService
+}
 
 func searchUser(username string, conn *ldap.Conn, settings []portainer.LDAPSearchSettings) (string, error) {
 	var userDN string
@@ -82,7 +87,7 @@ func createConnection(settings *portainer.LDAPSettings) (*ldap.Conn, error) {
 }
 
 // AuthenticateUser is used to authenticate a user against a LDAP/AD.
-func (*Service) AuthenticateUser(username, password string, settings *portainer.LDAPSettings) error {
+func (service *Service) AuthenticateUser(username, password string, settings *portainer.LDAPSettings) error {
 
 	connection, err := createConnection(settings)
 	if err != nil {
@@ -97,21 +102,20 @@ func (*Service) AuthenticateUser(username, password string, settings *portainer.
 
 	userDN, err := searchUser(username, connection, settings.SearchSettings)
 	if err != nil {
-		if err == ErrUserNotFound {
-			user = &portainer.User{
+		if err == ErrUserNotFound {			
+			user := &portainer.User{
 				Username: username,
 				Role:     portainer.StandardUserRole,
 			}
 
-			if err := handler.UserService.CreateUser(user); err != nil {
+			if err := service.UserService.CreateUser(user); err != nil {
 				return err
 			}
 
-			if err := handler.addLdapUserIntoTeams(user, settings); err != nil {
+			if err := service.addLdapUserIntoTeams(user, settings); err != nil {
 				return err
 			}
 
-			return nil
 		} else {
 			return err
 		}
@@ -124,6 +128,28 @@ func (*Service) AuthenticateUser(username, password string, settings *portainer.
 
 	return nil
 }
+
+/*
+func addLdapUser(username string, settings *portainer.LDAPSettings) error {
+// user *portainer.User, settings *portainer.LDAPSettings) error {
+ // func (*Service) AuthenticateUser(username, password string, settings *portainer.LDAPSettings) error {
+ 
+	user := &portainer.User{
+		Username: username,
+		Role:     portainer.StandardUserRole,
+	}
+
+	if err := handler.UserService.CreateUser(user); err != nil {
+		return err
+	}
+
+	if err := handler.addLdapUserIntoTeams(user, settings); err != nil {
+		return err
+	}
+
+	return nil
+ 
+}*/
 
 // GetUserGroups is used to retrieve user groups from LDAP/AD.
 func (*Service) GetUserGroups(username string, settings *portainer.LDAPSettings) ([]string, error) {
@@ -196,18 +222,18 @@ func (*Service) TestConnectivity(settings *portainer.LDAPSettings) error {
 	return nil
 }
 
-func (handler *AuthHandler) addLdapUserIntoTeams(user *portainer.User, settings *portainer.LDAPSettings) error {
-	teams, err := handler.TeamService.Teams()
+func (service *Service) addLdapUserIntoTeams(user *portainer.User, settings *portainer.LDAPSettings) error {
+	teams, err := service.TeamService.Teams()
 	if err != nil {
 		return err
 	}
 
-	userLdapGroups, err := handler.LDAPService.GetUserGroups(user.Username, settings)
+	userLdapGroups, err := service.LDAPService.GetUserGroups(user.Username, settings)
 	if err != nil {
 		return err
 	}
 
-	userMemberships, err := handler.TeamMembershipService.TeamMembershipsByUserID(user.ID)
+	userMemberships, err := service.TeamMembershipService.TeamMembershipsByUserID(user.ID)
 	if err != nil {
 		return err
 	}
@@ -225,7 +251,7 @@ func (handler *AuthHandler) addLdapUserIntoTeams(user *portainer.User, settings 
 				Role:   portainer.TeamMember,
 			}
 
-			handler.TeamMembershipService.CreateTeamMembership(membership)
+			service.TeamMembershipService.CreateTeamMembership(membership)
 		}
 	}
 	return nil
@@ -247,27 +273,4 @@ func teamMembershipExists(teamID portainer.TeamID, memberships []portainer.TeamM
 		}
 	}
 	return false
-}
-
-// GetUserGroups is used to retrieve user groups from LDAP/AD.
-func (*Service) GetUserGroups(username string, settings *portainer.LDAPSettings) ([]string, error) {
-	connection, err := createConnection(settings)
-	if err != nil {
-		return nil, err
-	}
-	defer connection.Close()
-
-	err = connection.Bind(settings.ReaderDN, settings.Password)
-	if err != nil {
-		return nil, err
-	}
-
-	userDN, err := searchUser(username, connection, settings.SearchSettings)
-	if err != nil {
-		return nil, err
-	}
-
-	userGroups := getGroups(userDN, connection, settings.SearchSettings)
-
-	return userGroups, nil
 }
