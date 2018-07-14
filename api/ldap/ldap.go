@@ -13,7 +13,6 @@ import (
 // Service represents a service used to authenticate users against a LDAP/AD.
 type Service struct {
 	UserService           portainer.UserService
-	CryptoService         portainer.CryptoService
 	LDAPService           portainer.LDAPService
 	TeamService           portainer.TeamService
 	TeamMembershipService portainer.TeamMembershipService
@@ -82,7 +81,11 @@ func createConnection(settings *portainer.LDAPSettings) (*ldap.Conn, error) {
 }
 
 // AuthenticateUser is used to authenticate a user against a LDAP/AD.
-func (service *Service) AuthenticateUser(username, password string, settings *portainer.LDAPSettings) (*portainer.TokenData, error) {
+func AuthenticateUser(username, password string, settings *portainer.LDAPSettings, userService portainer.UserService) (*portainer.TokenData, error) {
+	service := &Service{
+		UserService: userService,
+	}
+
 	tokenData := &portainer.TokenData{}
 
 	connection, err := createConnection(settings)
