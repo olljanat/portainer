@@ -6,10 +6,8 @@ import (
 	"github.com/portainer/portainer"
 	"github.com/portainer/portainer/http/handler"
 	"github.com/portainer/portainer/http/handler/auth"
-	"github.com/portainer/portainer/http/handler/dockerhub"
 	"github.com/portainer/portainer/http/handler/endpointgroups"
 	"github.com/portainer/portainer/http/handler/endpointproxy"
-	"github.com/portainer/portainer/http/handler/endpoints"
 	"github.com/portainer/portainer/http/handler/file"
 	"github.com/portainer/portainer/http/handler/registries"
 	"github.com/portainer/portainer/http/handler/resourcecontrols"
@@ -93,13 +91,6 @@ func (server *Server) Start() error {
 	authHandler.SettingsService = server.SettingsService
 	authHandler.TeamService = server.TeamService
 	authHandler.TeamMembershipService = server.TeamMembershipService
-	var userHandler = handler.NewUserHandler(requestBouncer)
-	userHandler.UserService = server.UserService
-	userHandler.TeamService = server.TeamService
-	userHandler.TeamMembershipService = server.TeamMembershipService
-	userHandler.CryptoService = server.CryptoService
-	userHandler.ResourceControlService = server.ResourceControlService
-	userHandler.SettingsService = server.SettingsService
 	var teamHandler = handler.NewTeamHandler(requestBouncer)
 	teamHandler.TeamService = server.TeamService
 	teamHandler.TeamMembershipService = server.TeamMembershipService
