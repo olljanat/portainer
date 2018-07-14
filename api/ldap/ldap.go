@@ -17,7 +17,7 @@ const (
 )
 
 // Service represents a service used to authenticate users against a LDAP/AD.
-type Service struct{
+type Service struct {
 	UserService           portainer.UserService
 	LDAPService           portainer.LDAPService
 	TeamService           portainer.TeamService
@@ -102,7 +102,7 @@ func (service *Service) AuthenticateUser(username, password string, settings *po
 
 	userDN, err := searchUser(username, connection, settings.SearchSettings)
 	if err != nil {
-		if err == ErrUserNotFound {			
+		if err == ErrUserNotFound {
 			user := &portainer.User{
 				Username: username,
 				Role:     portainer.StandardUserRole,
@@ -128,28 +128,6 @@ func (service *Service) AuthenticateUser(username, password string, settings *po
 
 	return nil
 }
-
-/*
-func addLdapUser(username string, settings *portainer.LDAPSettings) error {
-// user *portainer.User, settings *portainer.LDAPSettings) error {
- // func (*Service) AuthenticateUser(username, password string, settings *portainer.LDAPSettings) error {
- 
-	user := &portainer.User{
-		Username: username,
-		Role:     portainer.StandardUserRole,
-	}
-
-	if err := handler.UserService.CreateUser(user); err != nil {
-		return err
-	}
-
-	if err := handler.addLdapUserIntoTeams(user, settings); err != nil {
-		return err
-	}
-
-	return nil
- 
-}*/
 
 // GetUserGroups is used to retrieve user groups from LDAP/AD.
 func (*Service) GetUserGroups(username string, settings *portainer.LDAPSettings) ([]string, error) {

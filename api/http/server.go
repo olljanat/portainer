@@ -6,8 +6,10 @@ import (
 	"github.com/portainer/portainer"
 	"github.com/portainer/portainer/http/handler"
 	"github.com/portainer/portainer/http/handler/auth"
+	"github.com/portainer/portainer/http/handler/dockerhub"
 	"github.com/portainer/portainer/http/handler/endpointgroups"
 	"github.com/portainer/portainer/http/handler/endpointproxy"
+	"github.com/portainer/portainer/http/handler/endpoints"
 	"github.com/portainer/portainer/http/handler/file"
 	"github.com/portainer/portainer/http/handler/registries"
 	"github.com/portainer/portainer/http/handler/resourcecontrols"
@@ -89,8 +91,15 @@ func (server *Server) Start() error {
 	authHandler.JWTService = server.JWTService
 	authHandler.LDAPService = server.LDAPService
 	authHandler.SettingsService = server.SettingsService
-	authHandler.TeamService = server.TeamService
-	authHandler.TeamMembershipService = server.TeamMembershipService
+
+	var dockerHubHandler = dockerhub.NewHandler(requestBouncer)
+	dockerHubHandler.DockerHubService = server.DockerHubService
+
+	var endpointHandler = endpoints.NewHandler(requestBouncer, server.EndpointManagement)
+	endpointHandler.EndpointService = server.EndpointService
+	endpointHandler.EndpointGroupService = server.EndpointGroupService
+	endpointHandler.FileService = server.FileService
+	endpointHandler.ProxyManager = proxyManager
 
 	var endpointGroupHandler = endpointgroups.NewHandler(requestBouncer)
 	endpointGroupHandler.EndpointGroupService = server.EndpointGroupService
@@ -156,7 +165,9 @@ func (server *Server) Start() error {
 
 	server.Handler = &handler.Handler{
 		AuthHandler:            authHandler,
+		DockerHubHandler:       dockerHubHandler,
 		EndpointGroupHandler:   endpointGroupHandler,
+		EndpointHandler:        endpointHandler,
 		EndpointProxyHandler:   endpointProxyHandler,
 		FileHandler:            fileHandler,
 		RegistryHandler:        registryHandler,
