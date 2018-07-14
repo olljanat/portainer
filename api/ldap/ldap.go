@@ -19,6 +19,7 @@ const (
 // Service represents a service used to authenticate users against a LDAP/AD.
 type Service struct {
 	UserService           portainer.UserService
+	CryptoService   portainer.CryptoService
 	LDAPService           portainer.LDAPService
 	TeamService           portainer.TeamService
 	TeamMembershipService portainer.TeamMembershipService
@@ -102,17 +103,24 @@ func (service *Service) AuthenticateUser(username, password string, settings *po
 
 	userDN, err := searchUser(username, connection, settings.SearchSettings)
 	if err != nil {
+		return err
+	}
+	
+	/*
+	if err != nil {
 		if err == ErrUserNotFound {
 			user := &portainer.User{
 				Username: username,
 				Role:     portainer.StandardUserRole,
 			}
 
-			if err := service.UserService.CreateUser(user); err != nil {
+			err := service.UserService.CreateUser(user)
+			if err != nil {
 				return err
 			}
 
-			if err := service.addLdapUserIntoTeams(user, settings); err != nil {
+			err := service.addLdapUserIntoTeams(user, settings)
+			if err != nil {
 				return err
 			}
 
@@ -120,10 +128,16 @@ func (service *Service) AuthenticateUser(username, password string, settings *po
 			return err
 		}
 	}
+	*/
 
 	err = connection.Bind(userDN, password)
 	if err != nil {
 		return err
+	}
+	
+	err = service.CryptoService.CompareHashAndData(u.Password, payload.Password)
+	if err != nil {
+		return &httperror.HandlerError{http.StatusUnprocessableEntity, "Invalid credentials", ErrInvalidCredentials}
 	}
 
 	return nil

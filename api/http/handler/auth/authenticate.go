@@ -57,11 +57,6 @@ func (handler *Handler) authenticate(w http.ResponseWriter, r *http.Request) *ht
 		if err != nil {
 			return &httperror.HandlerError{http.StatusInternalServerError, "Unable to authenticate user via LDAP/AD", err}
 		}
-	} else {
-		err = handler.CryptoService.CompareHashAndData(u.Password, payload.Password)
-		if err != nil {
-			return &httperror.HandlerError{http.StatusUnprocessableEntity, "Invalid credentials", ErrInvalidCredentials}
-		}
 	}
 
 	tokenData := &portainer.TokenData{
