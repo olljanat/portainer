@@ -10,12 +10,6 @@ import (
 	"gopkg.in/ldap.v2"
 )
 
-const (
-	// ErrUserNotFound defines an error raised when the user is not found via LDAP search
-	// or that too many entries (> 1) are returned.
-	ErrUserNotFound = portainer.Error("User not found or too many entries returned")
-)
-
 // Service represents a service used to authenticate users against a LDAP/AD.
 type Service struct {
 	UserService           portainer.UserService
@@ -52,7 +46,7 @@ func searchUser(username string, conn *ldap.Conn, settings []portainer.LDAPSearc
 	}
 
 	if !found {
-		return "", ErrUserNotFound
+		return "", portainer.Error("LdapUserNotFound")
 	}
 
 	return userDN, nil
