@@ -107,23 +107,27 @@ func (service *Service) AuthenticateUser(username, password string, settings *po
 	}
 
 	u, err := service.UserService.UserByUsername(username)
-	if err == portainer.ErrObjectNotFound {
-		user := &portainer.User{
-			Username: username,
-			Role:     portainer.StandardUserRole,
-		}
+	if err != nil {
+		if err == portainer.ErrObjectNotFound {
+			user := &portainer.User{
+				Username: username,
+				Role:     portainer.StandardUserRole,
+			}
 
-		err = service.UserService.CreateUser(user)
-		if err != nil {
-			return nil, err
-		}
+			err = service.UserService.CreateUser(user)
+			if err != nil {
+				return nil, err
+			}
 
-		err = service.addLdapUserIntoTeams(user, settings)
-		if err != nil {
-			return nil, err
-		}
+			err = service.addLdapUserIntoTeams(user, settings)
+			if err != nil {
+				return nil, err
+			}
 
-		u, err = service.UserService.UserByUsername(username)
+			u, err = service.UserService.UserByUsername(username)
+		}
+	} else {
+		return nil, err
 	}
 
 	tokenData = &portainer.TokenData{
