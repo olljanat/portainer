@@ -5,11 +5,11 @@ function LDAPSettingsViewModel(data) {
   this.SearchSettings = data.SearchSettings;
 }
 
-function LDAPSearchSettings(BaseDN, UsernameAttribute, Filter, GroupBaseDN, GroupAttribute, GroupFilter) {
-  this.BaseDN = BaseDN;
-  this.UsernameAttribute = UsernameAttribute;
-  this.Filter = Filter;
-  this.GroupBaseDN = GroupBaseDN;
-  this.GroupAttribute = GroupAttribute;
-  this.GroupFilter = GroupFilter;
+function LDAPSearchSettings(data) {
+  this.BaseDN = data.BaseDN;
+  this.UsernameAttribute = data.UsernameAttribute;
+  this.Filter = data.Filter;
+  this.GroupBaseDN = data.GroupBaseDN;
+  this.GroupAttribute = data.GroupAttribute;
+  this.GroupFilter = data.GroupFilter;
 }
