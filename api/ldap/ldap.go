@@ -11,12 +11,7 @@ import (
 )
 
 // Service represents a service used to authenticate users against a LDAP/AD.
-type Service struct {
-	UserService           portainer.UserService
-	LDAPService           portainer.LDAPService
-	TeamService           portainer.TeamService
-	TeamMembershipService portainer.TeamMembershipService
-}
+type Service struct { }
 
 func searchUser(username string, conn *ldap.Conn, settings []portainer.LDAPSearchSettings) (string, error) {
 	var userDN string
@@ -81,65 +76,62 @@ func createConnection(settings *portainer.LDAPSettings) (*ldap.Conn, error) {
 }
 
 // AuthenticateUser is used to authenticate a user against a LDAP/AD.
-func AuthenticateUser(username, password string, settings *portainer.LDAPSettings, userService portainer.UserService) (*portainer.TokenData, error) {
-	service := &Service{
-		UserService: userService,
-	}
-
-	tokenData := &portainer.TokenData{}
+func (*Service) AuthenticateUser(username, password string, settings *portainer.LDAPSettings) error {
 
 	connection, err := createConnection(settings)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer connection.Close()
 
 	err = connection.Bind(settings.ReaderDN, settings.Password)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	userDN, err := searchUser(username, connection, settings.SearchSettings)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	err = connection.Bind(userDN, password)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	u, err := service.UserService.UserByUsername(username)
-	if err != nil {
-		if err == portainer.ErrObjectNotFound {
-			user := &portainer.User{
-				Username: username,
-				Role:     portainer.StandardUserRole,
-			}
+	/*
+		u, err := service.UserService.UserByUsername(username)
+		if err != nil {
+			if err == portainer.ErrObjectNotFound {
+				user := &portainer.User{
+					Username: username,
+					Role:     portainer.StandardUserRole,
+				}
 
-			err = service.UserService.CreateUser(user)
-			if err != nil {
-				return nil, err
-			}
+				err = service.UserService.CreateUser(user)
+				if err != nil {
+					return nil, err
+				}
 
-			err = service.addLdapUserIntoTeams(user, settings)
-			if err != nil {
-				return nil, err
-			}
+				u, err = service.UserService.UserByUsername(username)
 
-			u, err = service.UserService.UserByUsername(username)
+
+				err = service.addLdapUserIntoTeams(user, settings)
+				if err != nil {
+					return nil, err
+				}
+			}
+		} else {
+			return nil, err
 		}
-	} else {
-		return nil, err
-	}
 
-	tokenData = &portainer.TokenData{
-		ID:       u.ID,
-		Username: u.Username,
-		Role:     u.Role,
-	}
-
-	return tokenData, nil
+		tokenData = &portainer.TokenData{
+			ID:       u.ID,
+			Username: u.Username,
+			Role:     u.Role,
+		}
+	*/
+	return nil
 }
 
 // GetUserGroups is used to retrieve user groups from LDAP/AD.
@@ -211,57 +203,4 @@ func (*Service) TestConnectivity(settings *portainer.LDAPSettings) error {
 		return err
 	}
 	return nil
-}
-
-func (service *Service) addLdapUserIntoTeams(user *portainer.User, settings *portainer.LDAPSettings) error {
-	teams, err := service.TeamService.Teams()
-	if err != nil {
-		return err
-	}
-
-	userLdapGroups, err := service.LDAPService.GetUserGroups(user.Username, settings)
-	if err != nil {
-		return err
-	}
-
-	userMemberships, err := service.TeamMembershipService.TeamMembershipsByUserID(user.ID)
-	if err != nil {
-		return err
-	}
-
-	for _, team := range teams {
-		if teamExists(team.Name, userLdapGroups) {
-
-			if teamMembershipExists(team.ID, userMemberships) {
-				continue
-			}
-
-			membership := &portainer.TeamMembership{
-				UserID: user.ID,
-				TeamID: team.ID,
-				Role:   portainer.TeamMember,
-			}
-
-			service.TeamMembershipService.CreateTeamMembership(membership)
-		}
-	}
-	return nil
-}
-
-func teamExists(teamName string, ldapGroups []string) bool {
-	for _, group := range ldapGroups {
-		if group == teamName {
-			return true
-		}
-	}
-	return false
-}
-
-func teamMembershipExists(teamID portainer.TeamID, memberships []portainer.TeamMembership) bool {
-	for _, membership := range memberships {
-		if membership.TeamID == teamID {
-			return true
-		}
-	}
-	return false
 }

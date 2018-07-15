@@ -24,8 +24,10 @@ type Handler struct {
 	UserService     portainer.UserService
 	CryptoService   portainer.CryptoService
 	JWTService      portainer.JWTService
-	LDAPService     portainer.LDAPService
+	LDAPService           portainer.LDAPService
 	SettingsService portainer.SettingsService
+	TeamService           portainer.TeamService
+	TeamMembershipService portainer.TeamMembershipService
 }
 
 // NewHandler creates a handler to manage authentication operations.

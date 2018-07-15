@@ -582,7 +582,7 @@ type (
 
 	// LDAPService represents a service used to authenticate users against a LDAP/AD.
 	LDAPService interface {
-		AuthenticateUser(username, password string, settings *LDAPSettings) (*TokenData, error)
+		AuthenticateUser(username, password string, settings *LDAPSettings) error
 		TestConnectivity(settings *LDAPSettings) error
 		GetUserGroups(username string, settings *LDAPSettings) ([]string, error)
 	}
