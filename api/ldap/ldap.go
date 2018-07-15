@@ -99,38 +99,6 @@ func (*Service) AuthenticateUser(username, password string, settings *portainer.
 		return err
 	}
 
-	/*
-		u, err := service.UserService.UserByUsername(username)
-		if err != nil {
-			if err == portainer.ErrObjectNotFound {
-				user := &portainer.User{
-					Username: username,
-					Role:     portainer.StandardUserRole,
-				}
-
-				err = service.UserService.CreateUser(user)
-				if err != nil {
-					return nil, err
-				}
-
-				u, err = service.UserService.UserByUsername(username)
-
-
-				err = service.addLdapUserIntoTeams(user, settings)
-				if err != nil {
-					return nil, err
-				}
-			}
-		} else {
-			return nil, err
-		}
-
-		tokenData = &portainer.TokenData{
-			ID:       u.ID,
-			Username: u.Username,
-			Role:     u.Role,
-		}
-	*/
 	return nil
 }
 

@@ -116,12 +116,10 @@ func (handler *Handler) authLdap(user *portainer.User, username string, password
 		}
 	}
 
-	/*
-		err = handler.addUserIntoTeams(u, settings)
-		if err != nil {
-			return nil, err
-		}
-	*/
+	err = handler.addUserIntoTeams(user, settings)
+	if err != nil {
+		return nil, err
+	}
 
 	return user, nil
 }
@@ -139,7 +137,7 @@ func (handler *Handler) addUserIntoTeams(user *portainer.User, settings *portain
 			return err
 		}
 	} else {
-		return portainer.Error("Function addUserIntoTeams only supports LDAP authentication")
+		return portainer.Error("Function addUserIntoTeams currently only supports LDAP authentication")
 	}
 
 	userMemberships, err := handler.TeamMembershipService.TeamMembershipsByUserID(user.ID)
