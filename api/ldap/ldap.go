@@ -11,7 +11,7 @@ import (
 )
 
 // Service represents a service used to authenticate users against a LDAP/AD.
-type Service struct { }
+type Service struct{}
 
 func searchUser(username string, conn *ldap.Conn, settings []portainer.LDAPSearchSettings) (string, error) {
 	var userDN string

@@ -20,12 +20,12 @@ const (
 // Handler is the HTTP handler used to handle authentication operations.
 type Handler struct {
 	*mux.Router
-	authDisabled    bool
-	UserService     portainer.UserService
-	CryptoService   portainer.CryptoService
-	JWTService      portainer.JWTService
+	authDisabled          bool
+	UserService           portainer.UserService
+	CryptoService         portainer.CryptoService
+	JWTService            portainer.JWTService
 	LDAPService           portainer.LDAPService
-	SettingsService portainer.SettingsService
+	SettingsService       portainer.SettingsService
 	TeamService           portainer.TeamService
 	TeamMembershipService portainer.TeamMembershipService
 }
