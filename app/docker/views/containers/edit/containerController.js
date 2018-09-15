@@ -254,6 +254,7 @@ function ($q, $scope, $state, $transition$, $filter, Commit, ContainerHelper, Co
         Name: restartPolicy,
         MaximumRetryCount: maximumRetryCount
       };
+      Notifications.success('Restart policy updated');
     }
 
     function notifyOnError(err) {
