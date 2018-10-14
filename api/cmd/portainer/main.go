@@ -173,6 +173,7 @@ func initSettings(settingsService portainer.SettingsService, flags *portainer.CL
 					portainer.LDAPGroupSearchSettings{},
 				},
 			},
+			ResourcesArePublicByDefault:        false,
 			AllowBindMountsForRegularUsers:     true,
 			AllowPrivilegedModeForRegularUsers: true,
 			SnapshotInterval:                   *flags.SnapshotInterval,

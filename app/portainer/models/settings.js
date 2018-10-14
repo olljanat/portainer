@@ -3,6 +3,7 @@ function SettingsViewModel(data) {
   this.BlackListedLabels = data.BlackListedLabels;
   this.AuthenticationMethod = data.AuthenticationMethod;
   this.LDAPSettings = data.LDAPSettings;
+  this.DefaultOwnership = data.DefaultOwnership;
   this.AllowBindMountsForRegularUsers = data.AllowBindMountsForRegularUsers;
   this.AllowPrivilegedModeForRegularUsers = data.AllowPrivilegedModeForRegularUsers;
   this.SnapshotInterval = data.SnapshotInterval;

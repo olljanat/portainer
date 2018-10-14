@@ -11,6 +11,7 @@ import (
 type publicSettingsResponse struct {
 	LogoURL                            string                         `json:"LogoURL"`
 	AuthenticationMethod               portainer.AuthenticationMethod `json:"AuthenticationMethod"`
+	ResourcesArePublicByDefault        bool                           `json:"ResourcesArePublicByDefault"`
 	AllowBindMountsForRegularUsers     bool                           `json:"AllowBindMountsForRegularUsers"`
 	AllowPrivilegedModeForRegularUsers bool                           `json:"AllowPrivilegedModeForRegularUsers"`
 	ExternalTemplates                  bool                           `json:"ExternalTemplates"`
@@ -26,6 +27,7 @@ func (handler *Handler) settingsPublic(w http.ResponseWriter, r *http.Request) *
 	publicSettings := &publicSettingsResponse{
 		LogoURL:                            settings.LogoURL,
 		AuthenticationMethod:               settings.AuthenticationMethod,
+		ResourcesArePublicByDefault:        settings.ResourcesArePublicByDefault,
 		AllowBindMountsForRegularUsers:     settings.AllowBindMountsForRegularUsers,
 		AllowPrivilegedModeForRegularUsers: settings.AllowPrivilegedModeForRegularUsers,
 		ExternalTemplates:                  false,

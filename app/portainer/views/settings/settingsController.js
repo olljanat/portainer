@@ -8,6 +8,7 @@ function ($scope, $state, Notifications, SettingsService, StateManager) {
 
   $scope.formValues = {
     customLogo: false,
+    resourcesArePublicByDefault: false,
     externalTemplates: false,
     restrictBindMounts: false,
     restrictPrivilegedMode: false,
@@ -44,6 +45,7 @@ function ($scope, $state, Notifications, SettingsService, StateManager) {
       settings.TemplatesURL = '';
     }
 
+    settings.ResourcesArePublicByDefault = $scope.formValues.resourcesArePublicByDefault;
     settings.AllowBindMountsForRegularUsers = !$scope.formValues.restrictBindMounts;
     settings.AllowPrivilegedModeForRegularUsers = !$scope.formValues.restrictPrivilegedMode;
 
@@ -78,6 +80,7 @@ function ($scope, $state, Notifications, SettingsService, StateManager) {
       if (settings.TemplatesURL !== '') {
         $scope.formValues.externalTemplates = true;
       }
+      $scope.formValues.resourcesArePublicByDefault = settings.ResourcesArePublicByDefault;
       $scope.formValues.restrictBindMounts = !settings.AllowBindMountsForRegularUsers;
       $scope.formValues.restrictPrivilegedMode = !settings.AllowPrivilegedModeForRegularUsers;
     })

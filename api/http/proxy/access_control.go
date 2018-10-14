@@ -33,14 +33,24 @@ func applyResourceAccessControlFromLabel(labelsObject, resourceObject map[string
 // access level for the user (granted or denied) as the second return value.
 // Returns a decorated object and authorized access (true) when a resource control is found to the specified resource
 // identifier and the user can access the resource.
+// Returns the original object and authorized access (true) when no resource control is found for the specified
+// resource identifier and defaultOwnership is 2 (public)
 // Returns the original object and authorized access (false) when no resource control is found for the specified
-// resource identifier.
+// resource identifier and defaultOwnership is (administrators)
 // Returns the original object and denied access (false) when a resource control is associated to the resource
 // and the user cannot access the resource.
 func applyResourceAccessControl(resourceObject map[string]interface{}, resourceIdentifier string,
 	context *restrictedOperationContext) (map[string]interface{}, bool) {
 
 	resourceControl := getResourceControlByResourceID(resourceIdentifier, context.resourceControls)
+
+	if resourceControl == nil && context.isPublicByDefault {
+		resourceControl = &portainer.ResourceControl{
+			ResourceID: resourceIdentifier,
+			Public:     true,
+		}
+	}
+
 	if resourceControl == nil {
 		return resourceObject, context.isAdmin
 	}
