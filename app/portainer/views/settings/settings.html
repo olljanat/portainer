@@ -75,6 +75,31 @@
             </div>
           </div>
           <!-- !templates -->
+          <div class="col-sm-12 form-section-title">
+            Default resource ownership
+          </div>
+          <div class="form-group">
+              <div class="col-sm-12">
+                <input type="radio" id="access_administrators" ng-model="$ctrl.formValues.DefaultOwnership" value="administrators">
+                <label for="access_administrators">
+                  <div class="boxselector_header">
+                    <i ng-class="'administrators' | ownershipicon" aria-hidden="true" style="margin-right: 2px;"></i>
+                    Administrators
+                  </div>
+                  <p>I want to restrict the management of extenally created resources to administrators only</p>
+                </label>
+                <div>
+                <input type="radio" id="access_public" ng-model="$ctrl.formValues.DefaultOwnership" value="public">
+                <label for="access_public">
+                  <div class="boxselector_header">
+                    <i ng-class="'public' | ownershipicon" aria-hidden="true" style="margin-right: 2px;"></i>
+                    Public
+                  </div>
+                  <p>I want any user with access to endpoint to be able to manage extenally created resources</p>
+                </label>
+              </div>
+            </div>
+          </div>
           <!-- security -->
           <div class="col-sm-12 form-section-title">
             Security
