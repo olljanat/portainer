@@ -85,6 +85,7 @@ type (
 		BlackListedLabels                  []Pair               `json:"BlackListedLabels"`
 		AuthenticationMethod               AuthenticationMethod `json:"AuthenticationMethod"`
 		LDAPSettings                       LDAPSettings         `json:"LDAPSettings"`
+		DefaultOwnership                   int                  `json:"DefaultOwnership"`
 		AllowBindMountsForRegularUsers     bool                 `json:"AllowBindMountsForRegularUsers"`
 		AllowPrivilegedModeForRegularUsers bool                 `json:"AllowPrivilegedModeForRegularUsers"`
 		SnapshotInterval                   string               `json:"SnapshotInterval"`

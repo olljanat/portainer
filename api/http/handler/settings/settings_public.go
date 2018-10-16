@@ -11,6 +11,7 @@ import (
 type publicSettingsResponse struct {
 	LogoURL                            string                         `json:"LogoURL"`
 	AuthenticationMethod               portainer.AuthenticationMethod `json:"AuthenticationMethod"`
+	DefaultOwnership                   int                            `json:"DefaultOwnership"`
 	AllowBindMountsForRegularUsers     bool                           `json:"AllowBindMountsForRegularUsers"`
 	AllowPrivilegedModeForRegularUsers bool                           `json:"AllowPrivilegedModeForRegularUsers"`
 	ExternalTemplates                  bool                           `json:"ExternalTemplates"`

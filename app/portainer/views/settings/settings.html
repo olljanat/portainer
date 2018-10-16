@@ -75,12 +75,13 @@
             </div>
           </div>
           <!-- !templates -->
+          <!-- ownership -->
           <div class="col-sm-12 form-section-title">
             Default resource ownership
           </div>
           <div class="form-group">
               <div class="col-sm-12">
-                <input type="radio" id="access_administrators" ng-model="$ctrl.formValues.DefaultOwnership" value="administrators">
+                <input type="radio" id="access_administrators" ng-model="$ctrl.formValues.defaultOwnership" value="1">
                 <label for="access_administrators">
                   <div class="boxselector_header">
                     <i ng-class="'administrators' | ownershipicon" aria-hidden="true" style="margin-right: 2px;"></i>
@@ -89,7 +90,7 @@
                   <p>I want to restrict the management of extenally created resources to administrators only</p>
                 </label>
                 <div>
-                <input type="radio" id="access_public" ng-model="$ctrl.formValues.DefaultOwnership" value="public">
+                <input type="radio" id="access_public" ng-model="$ctrl.formValues.defaultOwnership" value="2">
                 <label for="access_public">
                   <div class="boxselector_header">
                     <i ng-class="'public' | ownershipicon" aria-hidden="true" style="margin-right: 2px;"></i>
@@ -100,6 +101,7 @@
               </div>
             </div>
           </div>
+          <!-- !ownership -->
           <!-- security -->
           <div class="col-sm-12 form-section-title">
             Security
