@@ -12,10 +12,6 @@ type (
 	}
 )
 
-type settingsPortainer struct {
-	Settings portainer.Settings
-}
-
 // applyResourceAccessControlFromLabel returns an optionally decorated object as the first return value and the
 // access level for the user (granted or denied) as the second return value.
 // It will retrieve an identifier from the labels object. If an identifier exists, it will check for
@@ -47,9 +43,8 @@ func applyResourceAccessControl(resourceObject map[string]interface{}, resourceI
 	context *restrictedOperationContext) (map[string]interface{}, bool) {
 
 	resourceControl := getResourceControlByResourceID(resourceIdentifier, context.resourceControls)
-	
-	var portainer settingsPortainer
-	if resourceControl == nil && portainer.Settings.DefaultOwnership == 2 {
+
+	if resourceControl == nil && context.isPublicByDefault {
 		return resourceObject, true
 	}
 

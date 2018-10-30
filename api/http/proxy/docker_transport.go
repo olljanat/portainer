@@ -26,10 +26,11 @@ type (
 		SignatureService       portainer.DigitalSignatureService
 	}
 	restrictedOperationContext struct {
-		isAdmin          bool
-		userID           portainer.UserID
-		userTeamIDs      []portainer.TeamID
-		resourceControls []portainer.ResourceControl
+		isAdmin           bool
+		isPublicByDefault bool
+		userID            portainer.UserID
+		userTeamIDs       []portainer.TeamID
+		resourceControls  []portainer.ResourceControl
 	}
 	registryAccessContext struct {
 		isAdmin         bool
@@ -472,10 +473,21 @@ func (p *proxyTransport) createOperationContext(request *http.Request) (*restric
 		return nil, err
 	}
 
+	// FixMe: Implement real settings read logic
+	isPublicByDefault := true
+	/*
+		settings, err := p.SettingsService.Settings()
+		isPublicByDefault := false
+		if settings.DefaultOwnership == 2 {
+			isPublicByDefault = true
+		}
+	*/
+
 	operationContext := &restrictedOperationContext{
-		isAdmin:          true,
-		userID:           tokenData.ID,
-		resourceControls: resourceControls,
+		isAdmin:           true,
+		isPublicByDefault: isPublicByDefault,
+		userID:            tokenData.ID,
+		resourceControls:  resourceControls,
 	}
 
 	if tokenData.Role != portainer.AdministratorRole {
