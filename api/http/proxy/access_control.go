@@ -38,7 +38,7 @@ func applyResourceAccessControlFromLabel(labelsObject, resourceObject map[string
 // Returns a decorated object and authorized access (true) when a resource control is found to the specified resource
 // identifier and the user can access the resource.
 // Returns the original object and authorized access (true) when no resource control is found for the specified
-// resource identifier and defaultOwnership is (public)
+// resource identifier and defaultOwnership is 2 (public)
 // Returns the original object and authorized access (false) when no resource control is found for the specified
 // resource identifier and defaultOwnership is (administrators)
 // Returns the original object and denied access (false) when a resource control is associated to the resource
