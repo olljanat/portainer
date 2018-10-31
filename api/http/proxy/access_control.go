@@ -45,7 +45,10 @@ func applyResourceAccessControl(resourceObject map[string]interface{}, resourceI
 	resourceControl := getResourceControlByResourceID(resourceIdentifier, context.resourceControls)
 
 	if resourceControl == nil && context.isPublicByDefault {
-		return resourceObject, true
+		resourceControl = &portainer.ResourceControl{
+			ResourceID: resourceIdentifier,
+			Public:     true,
+		}
 	}
 
 	if resourceControl == nil {

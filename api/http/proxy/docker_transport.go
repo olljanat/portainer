@@ -473,15 +473,8 @@ func (p *proxyTransport) createOperationContext(request *http.Request) (*restric
 		return nil, err
 	}
 
-	// FixMe: Implement real settings read logic
-	isPublicByDefault := true
-	/*
-		settings, err := p.SettingsService.Settings()
-		isPublicByDefault := false
-		if settings.DefaultOwnership == 2 {
-			isPublicByDefault = true
-		}
-	*/
+	settings, err := p.SettingsService.Settings()
+	isPublicByDefault := settings.ResourcesArePublicByDefault
 
 	operationContext := &restrictedOperationContext{
 		isAdmin:           true,

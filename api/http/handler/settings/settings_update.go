@@ -16,7 +16,7 @@ type settingsUpdatePayload struct {
 	BlackListedLabels                  []portainer.Pair
 	AuthenticationMethod               *int
 	LDAPSettings                       *portainer.LDAPSettings
-	DefaultOwnership                   *int
+	ResourcesArePublicByDefault        *bool
 	AllowBindMountsForRegularUsers     *bool
 	AllowPrivilegedModeForRegularUsers *bool
 	SnapshotInterval                   *string
@@ -69,8 +69,8 @@ func (handler *Handler) settingsUpdate(w http.ResponseWriter, r *http.Request) *
 		settings.LDAPSettings = *payload.LDAPSettings
 	}
 
-	if payload.DefaultOwnership != nil {
-		settings.DefaultOwnership = *payload.DefaultOwnership
+	if payload.ResourcesArePublicByDefault != nil {
+		settings.ResourcesArePublicByDefault = *payload.ResourcesArePublicByDefault
 	}
 
 	if payload.AllowBindMountsForRegularUsers != nil {
