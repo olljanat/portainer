@@ -1,4 +1,4 @@
-angular.module('portainer.app').controller('EndpointListController', ['DatatableService',
+angular.module('portainer.app').controller('TemplateListController', ['DatatableService',
   function TemplateListController(DatatableService) {
     var ctrl = this;
 
@@ -8,6 +8,10 @@ angular.module('portainer.app').controller('EndpointListController', ['Datatable
       categories: [],
       showContainerTemplates: true
     };
+
+    function onTextFilterChange() {
+      DatatableService.setDataTableTextFilters(this.tableKey, this.state.textFilter);
+    }
 
     this.updateCategories = function() {
       var availableCategories = [];
@@ -42,13 +46,10 @@ angular.module('portainer.app').controller('EndpointListController', ['Datatable
         this.state.showContainerTemplates = false;
       }
       this.updateCategories();
-    };
 
-    this.$onInit = function() {
       var textFilter = DatatableService.getDataTableTextFilters(this.tableKey);
       if (textFilter !== null) {
         this.state.textFilter = textFilter;
-        onFilterChanged();
       }
     };
   }
