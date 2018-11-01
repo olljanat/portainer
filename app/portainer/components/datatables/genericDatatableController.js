@@ -58,6 +58,7 @@ function (PaginationService, DatatableService) {
     var textFilter = DatatableService.getDataTableTextFilters(this.tableKey);
     if (textFilter !== null) {
       this.state.textFilter = textFilter;
+      onTextFilterChange();
     }
   };
 
