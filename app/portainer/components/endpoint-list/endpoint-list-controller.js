@@ -1,5 +1,5 @@
-angular.module('portainer.app').controller('EndpointListController', [
-  function EndpointListController() {
+angular.module('portainer.app').controller('EndpointListController', ['DatatableService',
+  function EndpointListController(DatatableService) {
     var ctrl = this;
     ctrl.state = {
       textFilter: '',
@@ -30,6 +30,7 @@ angular.module('portainer.app').controller('EndpointListController', [
         ctrl.endpoints,
         filterValue
       );
+      DatatableService.setDataTableTextFilters(this.tableKey, this.state.textFilter);
     }
 
     function filterEndpoints(endpoints, filterValue) {
@@ -56,5 +57,13 @@ angular.module('portainer.app').controller('EndpointListController', [
     function convertStatusToString(status) {
       return status === 1 ? 'up' : 'down';
     }
+
+    this.$onInit = function() {
+      var textFilter = DatatableService.getDataTableTextFilters(this.tableKey);
+      if (textFilter !== null) {
+        this.state.textFilter = textFilter;
+        onFilterChanged();
+      }
+    };
   }
 ]);
