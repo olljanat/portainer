@@ -2,6 +2,7 @@ package main // import "github.com/portainer/portainer"
 
 import (
 	"encoding/json"
+	"os"
 	"strings"
 
 	"github.com/portainer/portainer"
@@ -87,7 +88,7 @@ func initJWTService(authenticationEnabled bool) portainer.JWTService {
 }
 
 func initDigitalSignatureService() portainer.DigitalSignatureService {
-	return &crypto.ECDSAService{}
+	return crypto.NewECDSAService(os.Getenv("AGENT_SECRET"))
 }
 
 func initCryptoService() portainer.CryptoService {
