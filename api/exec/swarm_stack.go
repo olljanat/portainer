@@ -68,7 +68,7 @@ func (manager *SwarmStackManager) Deploy(stack *portainer.Stack, prune bool, end
 	if prune {
 		args = append(args, "stack", "deploy", "--prune", "--with-registry-auth", "--compose-file", stackFilePath, stack.Name)
 	} else {
-		args = append(args, "stack", "deploy", "--with-registry-auth", "--compose-file", stackFilePath, stack.Name)
+		args = append(args, "stack", "deploy", "--compose-file", stackFilePath, stack.Name)
 	}
 
 	env := make([]string, 0)
