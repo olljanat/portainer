@@ -1,8 +1,11 @@
-angular.module('portainer.app')
-.controller('GenericDatatableController', ['PaginationService', 'DatatableService',
+angular.module('portainer.docker')
+.controller('TasksDatatableController', ['PaginationService', 'DatatableService',
 function (PaginationService, DatatableService) {
-
   this.state = {
+    showQuickActionStats: true,
+    showQuickActionLogs: true,
+    showQuickActionConsole: true,
+    showQuickActionInspect: true,
     selectAll: false,
     orderBy: this.orderBy,
     paginatedItemLimit: PaginationService.getPaginationLimit(this.tableKey),
@@ -10,7 +13,6 @@ function (PaginationService, DatatableService) {
     selectedItemCount: 0,
     selectedItems: []
   };
-
 
   this.onTextFilterChange = function() {
     DatatableService.setDataTableTextFilters(this.tableKey, this.state.textFilter);
@@ -58,7 +60,6 @@ function (PaginationService, DatatableService) {
     var textFilter = DatatableService.getDataTableTextFilters(this.tableKey);
     if (textFilter !== null) {
       this.state.textFilter = textFilter;
-      this.onTextFilterChange();
     }
   };
 
