@@ -541,7 +541,7 @@ type (
 		GenerateKeyPair() ([]byte, []byte, error)
 		EncodedPublicKey() string
 		PEMHeaders() (string, string)
-		CreateSignature() (string, error)
+		CreateSignature(message string) (string, error)
 	}
 
 	// JWTService represents a service for managing JWT tokens.
