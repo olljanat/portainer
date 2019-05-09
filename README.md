@@ -4,3 +4,6 @@ This fork is based on Portainer 1.19.1 version which is last official version wh
 Most critical bugfixes and changes will be cherry-picked to here.
 
 This fork can be removed after [portainer/portainer#2424](https://github.com/portainer/portainer/pull/2424) is released.
+
+
+You can find docker images from: https://hub.docker.com/r/ollijanatuinen/portainer
