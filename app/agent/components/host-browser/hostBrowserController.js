@@ -1,6 +1,12 @@
 import _ from 'lodash-es';
 
-const ROOT_PATH = '/host';
+const fs = require('fs');
+try {
+  fs.accessSync("c:/host");
+  const ROOT_PATH = '/c:/host';
+} catch (e) {
+  const ROOT_PATH = '/host';
+}
 
 export class HostBrowserController {
   /* @ngInject */
