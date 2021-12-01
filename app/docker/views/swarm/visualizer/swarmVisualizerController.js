@@ -11,7 +11,7 @@ angular.module('portainer.docker').controller('SwarmVisualizerController', [
   function ($q, $scope, $document, $interval, NodeService, ServiceService, TaskService, Notifications, LocalStorage) {
     $scope.state = {
       ShowInformationPanel: true,
-      DisplayOnlyRunningTasks: false,
+      DisplayOnlyRunningTasks: true,
       DisplayNodeLabels: false,
       refreshRate: '5',
     };

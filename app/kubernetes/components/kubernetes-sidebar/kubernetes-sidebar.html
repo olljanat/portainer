@@ -8,6 +8,7 @@
   Dashboard
 </sidebar-menu-item>
 
+<!--
 <sidebar-menu-item
   path="kubernetes.templates.custom"
   path-params="{ endpointId: $ctrl.endpointId }"
@@ -17,6 +18,7 @@
 >
   Custom Templates
 </sidebar-menu-item>
+-->
 
 <sidebar-menu-item
   path="kubernetes.resourcePools"
@@ -28,15 +30,11 @@
   Namespaces
 </sidebar-menu-item>
 
-<sidebar-menu-item
-  path="kubernetes.templates.helm"
-  path-params="{ endpointId: $ctrl.endpointId }"
-  icon-class="fa-dharmachakra fa-fw"
-  class-name="sidebar-list"
-  data-cy="k8sSidebar-helm"
->
+<!--
+<sidebar-menu-item path="kubernetes.templates.helm" path-params="{ endpointId: $ctrl.endpointId }" icon-class="fa-dharmachakra fa-fw" class-name="sidebar-list">
   Helm
 </sidebar-menu-item>
+-->
 
 <sidebar-menu-item
   path="kubernetes.applications"
@@ -62,11 +60,16 @@
   Volumes
 </sidebar-menu-item>
 
-<sidebar-menu
+<sidebar-menu-item
   icon-class="fa-server fa-fw"
-  label="Cluster"
   path="kubernetes.cluster"
   path-params="{ endpointId: $ctrl.endpointId }"
+  class-name="sidebar-list"
+  data-cy="k8sSidebar-cluster"
+>
+  Cluster
+</sidebar-menu-item>
+<!--
   is-sidebar-open="$ctrl.isSidebarOpen"
   children-paths="['kubernetes.cluster', 'portainer.k8sendpoint.kubernetesConfig', 'kubernetes.registries', 'kubernetes.registries.access']"
 >
@@ -92,3 +95,4 @@
     </sidebar-menu-item>
   </div>
 </sidebar-menu>
+-->

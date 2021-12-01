@@ -604,10 +604,12 @@ func buildServer(flags *portainer.CLIFlags) portainer.Server {
 		}
 	}
 
+	/*
 	err = reverseTunnelService.StartTunnelServer(*flags.TunnelAddr, *flags.TunnelPort, snapshotService)
 	if err != nil {
 		log.Fatalf("failed starting tunnel server: %s", err)
 	}
+	*/
 
 	sslDBSettings, err := dataStore.SSLSettings().Settings()
 	if err != nil {

@@ -34,6 +34,7 @@ func (handler *Handler) authenticateOAuth(code string, settings *portainer.OAuth
 		return "", errors.New("Invalid OAuth configuration")
 	}
 
+	// Check group here from: configuration.Scopes
 	username, err := handler.OAuthService.Authenticate(code, settings)
 	if err != nil {
 		return "", err
@@ -88,7 +89,7 @@ func (handler *Handler) validateOAuth(w http.ResponseWriter, r *http.Request) *h
 	if user == nil {
 		user = &portainer.User{
 			Username: username,
-			Role:     portainer.StandardUserRole,
+			Role:     portainer.AdministratorRole,
 		}
 
 		err = handler.DataStore.User().CreateUser(user)

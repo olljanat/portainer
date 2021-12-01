@@ -4,6 +4,7 @@
       <div class="toolBar">
         <div class="toolBarTitle"> <i class="fa" ng-class="$ctrl.titleIcon" aria-hidden="true" style="margin-right: 2px;"></i> {{ $ctrl.titleText }} </div>
       </div>
+      <!--
       <div class="actionBar">
         <button
           type="button"
@@ -18,6 +19,7 @@
           <i class="fa fa-plus space-right" aria-hidden="true"></i>Add environment
         </button>
       </div>
+      -->
       <div class="searchBar">
         <i class="fa fa-search searchIcon" aria-hidden="true"></i>
         <input
@@ -94,9 +96,11 @@
                 <span ng-if="item.Type === 4">-</span>
               </td>
               <td>{{ item.GroupName }}</td>
+              <!--
               <td>
                 <a ui-sref="portainer.endpoints.endpoint.access({id: item.Id})"> <i class="fa fa-users" aria-hidden="true"></i> Manage access </a>
               </td>
+              -->
             </tr>
             <tr ng-if="$ctrl.state.loading">
               <td colspan="5" class="text-center text-muted">Loading...</td>

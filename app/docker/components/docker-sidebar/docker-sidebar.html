@@ -8,6 +8,7 @@
   Dashboard
 </sidebar-menu-item>
 
+<!--
 <sidebar-menu
   ng-if="!$ctrl.offlineMode"
   label="App Templates"
@@ -21,6 +22,7 @@
     Custom Templates
   </sidebar-menu-item>
 </sidebar-menu>
+-->
 
 <sidebar-menu-item
   ng-if="$ctrl.showStacks"
@@ -93,13 +95,16 @@
   Events
 </sidebar-menu-item>
 
-<sidebar-menu
+<sidebar-menu-item
   ng-if="$ctrl.standaloneManagement"
-  label="Host"
   icon-class="fa-th fa-fw"
   path="docker.host"
   path-params="{ endpointId: $ctrl.endpointId }"
   is-sidebar-open="$ctrl.isSidebarOpen"
+>
+  Host
+</sidebar-menu-item>
+<!--
   children-paths="['docker.registries', 'docker.registries.access', 'docker.featuresConfiguration']"
 >
   <div ng-if="$ctrl.adminAccess">
@@ -124,16 +129,23 @@
     </sidebar-menu-item>
   </div>
 </sidebar-menu>
+-->
 
-<sidebar-menu
+<sidebar-menu-item
   ng-if="$ctrl.swarmManagement"
-  label="Swarm"
   icon-class="fa-object-group fa-fw"
   path="docker.swarm"
   path-params="{ endpointId: $ctrl.endpointId }"
+  class-name="sidebar-list"
+  data-cy="dockerSidebar-swarm"
+>
+  Swarm
+</sidebar-menu-item>
+<!--
   is-sidebar-open="$ctrl.isSidebarOpen"
   children-paths="['docker.registries', 'docker.registries.access', 'docker.featuresConfiguration']"
 >
+
   <div ng-if="$ctrl.adminAccess">
     <sidebar-menu-item
       authorization="PortainerEndpointUpdateSettings"
@@ -156,3 +168,4 @@
     </sidebar-menu-item>
   </div>
 </sidebar-menu>
+-->

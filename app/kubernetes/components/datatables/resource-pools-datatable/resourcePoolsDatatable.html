@@ -50,6 +50,7 @@
           </span>
         </div>
       </div>
+      <!--
       <div ng-if="$ctrl.isAdmin" class="actionBar">
         <button
           type="button"
@@ -67,6 +68,7 @@
           <i class="fa fa-plus space-right" aria-hidden="true"></i>Create from manifest
         </button>
       </div>
+      -->
       <div class="searchBar">
         <i class="fa fa-search searchIcon" aria-hidden="true"></i>
         <input
@@ -139,12 +141,14 @@
               </td>
               <td> <i class="fa {{ item.Quota ? 'fa-toggle-on' : 'fa-toggle-off' }}" aria-hidden="true" style="margin-right: 2px;"></i> {{ item.Quota ? 'Yes' : 'No' }} </td>
               <td>{{ item.Namespace.CreationDate | getisodate }} {{ item.Namespace.ResourcePoolOwner ? 'by ' + item.Namespace.ResourcePoolOwner : '' }}</td>
+              <!--
               <td ng-if="$ctrl.isAdmin">
                 <a ng-if="$ctrl.canManageAccess(item)" ui-sref="kubernetes.resourcePools.resourcePool.access({id: item.Namespace.Name})">
                   <i class="fa fa-users" aria-hidden="true"></i> Manage access
                 </a>
                 <span ng-if="!$ctrl.canManageAccess(item)">-</span>
               </td>
+              -->
             </tr>
             <tr ng-if="!$ctrl.dataset">
               <td colspan="4" class="text-center text-muted">Loading...</td>
