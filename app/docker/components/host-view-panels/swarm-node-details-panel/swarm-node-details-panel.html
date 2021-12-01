@@ -13,6 +13,7 @@
               <td>Role</td>
               <td>{{ $ctrl.details.role }} {{ $ctrl.state.managerAddress }}</td>
             </tr>
+            <!--
             <tr>
               <td>Availability</td>
               <td>
@@ -24,6 +25,7 @@
                 </node-availability-select>
               </td>
             </tr>
+            -->
             <tr>
               <td>Status</td>
               <td
@@ -32,9 +34,11 @@
             </tr>
             <tr>
               <td>
+                <!--
                 <div class="nopadding">
                   <a class="btn btn-default btn-sm pull-right" ng-click="$ctrl.addLabel(node)"> <i class="fa fa-plus-circle" aria-hidden="true"></i> label </a>
                 </div>
+                -->
                 Node Labels
               </td>
               <td></td>
@@ -44,6 +48,7 @@
                 <node-labels-table labels="$ctrl.details.nodeLabels" on-changed-labels="$ctrl.updateNodeLabels(labels)"></node-labels-table>
               </td>
             </tr>
+            <!--
             <tr>
               <td colspan="2">
                 <div class="btn-toolbar" role="toolbar">
@@ -61,6 +66,7 @@
                 </div>
               </td>
             </tr>
+            -->
           </tbody>
         </table>
       </rd-widget-body>

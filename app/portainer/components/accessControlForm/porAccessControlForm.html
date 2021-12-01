@@ -1,8 +1,8 @@
 <div>
+  <!--
   <div ng-if="!$ctrl.hideTitle" class="col-sm-12 form-section-title">
     Access control
   </div>
-  <!-- access-control-switch -->
   <div class="form-group">
     <div class="col-sm-12">
       <label for="ownership" class="control-label text-left">
@@ -12,8 +12,6 @@
       <label class="switch" style="margin-left: 20px;"> <input name="ownership" type="checkbox" ng-model="$ctrl.formData.AccessControlEnabled" /><i></i> </label>
     </div>
   </div>
-  <!-- !access-control-switch -->
-  <!-- restricted-access -->
   <div class="form-group" ng-if="$ctrl.formData.AccessControlEnabled" style="margin-bottom: 0;">
     <div class="boxselector_wrapper">
       <div ng-if="$ctrl.isAdmin">
@@ -68,8 +66,6 @@
       </div>
     </div>
   </div>
-  <!-- restricted-access -->
-  <!-- authorized-teams -->
   <div
     class="form-group"
     ng-if="$ctrl.formData.AccessControlEnabled && $ctrl.formData.Ownership === $ctrl.RCO.RESTRICTED && ($ctrl.isAdmin || (!$ctrl.isAdmin && $ctrl.availableTeams.length > 1))"
@@ -107,8 +103,6 @@
       </span>
     </div>
   </div>
-  <!-- !authorized-teams -->
-  <!-- authorized-users -->
   <div class="form-group" ng-if="$ctrl.formData.AccessControlEnabled && $ctrl.formData.Ownership === $ctrl.RCO.RESTRICTED && $ctrl.isAdmin">
     <div class="col-sm-12">
       <label for="group-access" class="control-label text-left">
@@ -138,5 +132,5 @@
       </span>
     </div>
   </div>
-  <!-- !authorized-users -->
+  -->
 </div>

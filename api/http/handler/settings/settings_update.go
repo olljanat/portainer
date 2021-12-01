@@ -189,10 +189,12 @@ func (handler *Handler) settingsUpdate(w http.ResponseWriter, r *http.Request) *
 		settings.EnableTelemetry = *payload.EnableTelemetry
 	}
 
+	/* Avoid error {"message":"Unable to remove TLS files from disk","details":"open /data/tls: input/output error"}
 	tlsError := handler.updateTLS(settings)
 	if tlsError != nil {
 		return tlsError
 	}
+	*/
 
 	if payload.KubectlShellImage != nil {
 		settings.KubectlShellImage = *payload.KubectlShellImage

@@ -1,79 +1,40 @@
-<p align="center">
-  <img title="portainer" src='https://github.com/portainer/portainer/blob/develop/app/assets/images/portainer-github-banner.png?raw=true' />
-</p>
+# Custom fork of Portainer
+Reason to create this customized version of Portainer is that IMO it switched to incorrect track on [portainer/portainer#2137](https://github.com/portainer/portainer/pull/2137) when they switched to configuration where it is **not possible** to control resources created outside of Portainer without admin permissions.
 
-**Portainer Community Edition** is a lightweight service delivery platform for containerized applications that can be used to manage Docker, Swarm, Kubernetes and ACI environments. It is designed to be as simple to deploy as it is to use. The application allows you to manage all your orchestrator resources (containers, images, volumes, networks and more) through a ‘smart’ GUI and/or an extensive API.
+And what is even worse they decided to **not accept** my pull request which would allow user choosing between old and new behavior [portainer/portainer#2424](https://github.com/portainer/portainer/pull/2424)
 
-Portainer consists of a single container that can run on any cluster. It can be deployed as a Linux container or a Windows native container.
+As result of that I ended up to creating customized version from latest state without that change and it have been available on [here](https://github.com/olljanat/portainer/tree/1.19.1-custom4) which I have been using on Docker environments (both standalone and swarm).
 
-**Portainer Business Edition** builds on the open-source base and includes a range of advanced features and functions (like RBAC and Support) that are specific to the needs of business users.
 
-- [Compare Portainer CE and Compare Portainer BE](https://portainer.io/products)
-- [Take5 – get 5 free nodes of Portainer Business for as long as you want them](https://portainer.io/pricing/take5)
-- [Portainer BE install guide](https://install.portainer.io)
+Now years later Portainer added Kubernetes support which I'm interested to use because it's UI is useful for visualization and troubleshooting purposes.
 
-## Demo
+Unfortunately they are decided that Portainer will totally ignore Kubernetes internal RBAC which means that anyone who want to use it are forced to use Portainer as only/primary management tool or alternatively maintain access rights on two places (=> Portainer is master, Kubernetes is slave).
 
-You can try out the public demo instance: http://demo.portainer.io/ (login with the username **admin** and the password **tryportainer**).
+Also [my proposal](https://github.com/portainer/portainer/issues/6100) about sharing kubeconfig with other tools got rejected.
 
-Please note that the public demo cluster is **reset every 15min**.
 
-## Latest Version
+So here we are once again with customized version of Portainer which totally reverses roles on way that Kubernetes RBAC is master and Portainer is forced to slave mode.
 
-Portainer CE is updated regularly. We aim to do an update release every couple of months.
+## How it is done?
+This fork is based on Portainer 2.11.0 version and it contains following customizations:
+* ~Auto create LDAP users as admin instead of standard user (=> totally skip Portainer internal RBAC)~ (will be removed)
+* Auto create OAuth users as admin instead of standard user (=> totally skip Portainer's internal RBAC)
+* Disabled all create and modify functionalities (=> make it read-only)
+* Hardcoded `Scopes` value to `id,email,name` on way that it works with Azure AD so we can re-use that field without modifying database.
+* Added Azure AD group ID check on way that only users which are part of Azure AD group specified on `Scopes` field are allowed to login.
 
-**The latest version of Portainer is 2.9.x**. Portainer is on version 2, the second number denotes the month of release.
+NOTE!!! Only Kubernetes endpoints are really read-only as that that is done with Kubernetes RBAC.
+Docker/Docker swarm APIs currently allow all functionalities and buttons are just hided from UI.
 
-## Getting started
+You can find docker images from: https://hub.docker.com/r/ollijanatuinen/portainer
 
-- [Deploy Portainer](https://docs.portainer.io/v/ce-2.9/start/install)
-- [Documentation](https://documentation.portainer.io)
-- [Contribute to the project](https://documentation.portainer.io/contributing/instructions/)
+## Usage (on Kubernetes)
+1. Deploy Portainer-CE 2.11.0 (normal version)
+2. Configure endpoints.
+3. Configure LDAP / OAuth with auto user create
+4. Drop Portainer but do NOT remove its data
+5. Create cluster role for using [this](https://github.com/olljanat/portainer/blob/2.11.0-customization/README.md) YAML
+6. Deploy custom version of Portainer on way that service account `portainer-sa-clusteradmin` and will use portainer role created above
+7. Have fun. All users login with LDAP and/or OAuth should be automatically created and see all resources on read-only mode.
 
-## Features & Functions
-
-View [this](https://www.portainer.io/products) table to see all of the Portainer CE functionality and compare to Portainer Business.
-
-- [Portainer CE for Docker / Docker Swarm](https://www.portainer.io/solutions/docker)
-- [Portainer CE for Kubernetes](https://www.portainer.io/solutions/kubernetes-ui)
-- [Portainer CE for Azure ACI](https://www.portainer.io/solutions/serverless-containers)
-
-## Getting help
-
-Portainer CE is an open source project and is supported by the community. You can buy a supported version of Portainer at portainer.io
-
-Learn more about Portainers community support channels [here.](https://www.portainer.io/community_help)
-
-- Issues: https://github.com/portainer/portainer/issues
-- Slack (chat): [https://portainer.slack.com/](https://join.slack.com/t/portainer/shared_invite/zt-txh3ljab-52QHTyjCqbe5RibC2lcjKA)
-
-You can join the Portainer Community by visiting community.portainer.io. This will give you advance notice of events, content and other related Portainer content.
-
-## Reporting bugs and contributing
-
-- Want to report a bug or request a feature? Please open [an issue](https://github.com/portainer/portainer/issues/new).
-- Want to help us build **_portainer_**? Follow our [contribution guidelines](https://documentation.portainer.io/contributing/instructions/) to build it locally and make a pull request.
-
-## Security
-
-- Here at Portainer, we believe in [responsible disclosure](https://en.wikipedia.org/wiki/Responsible_disclosure) of security issues. If you have found a security issue, please report it to <security@portainer.io>.
-
-## Work for us
-
-If you are a developer, and our code in this repo makes sense to you, we would love to hear from you. We are always on the hunt for awesome devs, either freelance or employed. Drop us a line to info@portainer.io with your details and/or visit our [careers page](https://portainer.io/careers).
-
-## Privacy
-
-**To make sure we focus our development effort in the right places we need to know which features get used most often. To give us this information we use [Matomo Analytics](https://matomo.org/), which is hosted in Germany and is fully GDPR compliant.**
-
-When Portainer first starts, you are given the option to DISABLE analytics. If you **don't** choose to disable it, we collect anonymous usage as per [our privacy policy](https://www.portainer.io/documentation/in-app-analytics-and-privacy-policy/). **Please note**, there is no personally identifiable information sent or stored at any time and we only use the data to help us improve Portainer.
-
-## Limitations
-
-Portainer supports "Current - 2 docker versions only. Prior versions may operate, however these are not supported.
-
-## Licensing
-
-Portainer is licensed under the zlib license. See [LICENSE](./LICENSE) for reference.
-
-Portainer also contains code from open source projects. See [ATTRIBUTIONS.md](./ATTRIBUTIONS.md) for a list.
+Alternatively if you are familiar with Portainer API you can deploy customized version directly and do all configuration from API.

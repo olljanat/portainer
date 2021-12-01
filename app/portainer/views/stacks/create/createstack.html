@@ -51,6 +51,7 @@
             </span>
           </div>
           <!-- build-method -->
+          <!--
           <div class="col-sm-12 form-section-title">
             Build method
           </div>
@@ -99,7 +100,7 @@
               </div>
             </div>
           </div>
-          <!-- !build-method -->
+          -->
 
           <!-- upload -->
           <div ng-show="state.Method === 'upload'">
@@ -125,6 +126,7 @@
             </div>
           </div>
           <!-- !upload -->
+          <!--
           <git-form
             ng-if="state.Method === 'repository'"
             model="formValues"
@@ -143,6 +145,7 @@
             on-change="(onChangeTemplateId)"
             value="state.selectedTemplateId"
           ></custom-template-selector>
+          -->
 
           <web-editor-form
             ng-if="state.Method === 'editor' || (state.Method === 'template' && state.selectedTemplateId)"
