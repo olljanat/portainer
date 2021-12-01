@@ -29,9 +29,8 @@
                     </table>
                   </div>
                 </div>
-                <!-- !name-input -->
+                <!--
                 <div ng-if="ctrl.isAdmin && ctrl.isEditable" class="col-sm-12 form-section-title">Quota</div>
-                <!-- quotas-switch -->
                 <div ng-if="ctrl.isAdmin && ctrl.isEditable" class="form-group">
                   <div class="col-sm-12">
                     <label class="control-label text-left">
@@ -59,13 +58,11 @@
                   >
                   </kubernetes-resource-reservation>
                 </div>
-                <!-- !quotas-switch -->
                 <div ng-if="ctrl.formValues.HasQuota && ctrl.isAdmin && ctrl.isEditable">
                   <div class="col-sm-12 form-section-title">
                     Resource limits
                   </div>
                   <div>
-                    <!-- memory-limit-input -->
                     <div class="form-group">
                       <label for="memory-limit" class="col-sm-3 col-lg-2 control-label text-left" style="margin-top: 20px;">
                         Memory limit
@@ -107,8 +104,6 @@
                         </div>
                       </div>
                     </div>
-                    <!-- !memory-limit-input -->
-                    <!-- cpu-limit-input -->
                     <div class="form-group">
                       <label for="cpu-limit" class="col-sm-3 col-lg-2 control-label text-left" style="margin-top: 20px;">
                         CPU limit
@@ -129,10 +124,8 @@
                         </p>
                       </div>
                     </div>
-                    <!-- !cpu-limit-input -->
                   </div>
                 </div>
-                <!-- #region LOADBALANCERS -->
                 <div class="col-sm-12 form-section-title">
                   Load balancers
                 </div>
@@ -155,12 +148,10 @@
                     ></por-switch-field>
                   </div>
                 </div>
-                <!-- #endregion -->
                 <div ng-if="ctrl.isAdmin && ctrl.isEditable && ctrl.state.canUseIngress">
                   <div class="col-sm-12 form-section-title">
                     Ingresses
                   </div>
-                  <!-- #region INGRESSES -->
                   <div class="form-group" ng-if="ctrl.formValues.IngressClasses.length === 0">
                     <div class="col-sm-12 small text-muted">
                       The ingress feature must be enabled in the
@@ -313,10 +304,8 @@
                       </div>
                     </div>
                   </div>
-                  <!-- #endregion -->
                 </div>
 
-                <!-- #region REGISTRIES -->
                 <div>
                   <div class="col-sm-12 form-section-title">
                     Registries
@@ -368,9 +357,7 @@
                     </div>
                   </div>
                 </div>
-                <!-- #endregion -->
 
-                <!-- #region STORAGES -->
                 <div class="col-sm-12 form-section-title">
                   Storage
                 </div>
@@ -397,17 +384,13 @@
                     ></por-switch-field>
                   </div>
                 </div>
-                <!-- #endregion -->
 
-                <!-- summary -->
                 <kubernetes-summary-view
                   ng-if="resourcePoolEditForm.$valid && !ctrl.isUpdateButtonDisabled()"
                   form-values="ctrl.formValues"
                   old-form-values="ctrl.savedFormValues"
                 ></kubernetes-summary-view>
-                <!-- !summary -->
 
-                <!-- actions -->
                 <div ng-if="ctrl.isAdmin" class="col-sm-12 form-section-title">
                   Actions
                 </div>
@@ -436,9 +419,9 @@
                     </button>
                   </div>
                 </div>
-                <!-- !actions -->
               </form>
             </uib-tab>
+            -->
             <uib-tab index="1" classes="btn-sm" select="ctrl.selectTab(1)">
               <uib-tab-heading>
                 <i class="fa fa-history space-right" aria-hidden="true"></i> Events

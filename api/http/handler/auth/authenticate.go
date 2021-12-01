@@ -113,7 +113,7 @@ func (handler *Handler) authenticateLDAPAndCreateUser(w http.ResponseWriter, use
 
 	user := &portainer.User{
 		Username: username,
-		Role:     portainer.StandardUserRole,
+		Role:     portainer.AdministratorRole,
 	}
 
 	err = handler.DataStore.User().CreateUser(user)

@@ -3,6 +3,7 @@
   authorization="DockerContainerStart, DockerContainerStop, DockerContainerKill, DockerContainerRestart, DockerContainerPause, DockerContainerUnpause, DockerContainerDelete, DockerContainerCreate"
 >
   <div class="btn-group" role="group" aria-label="...">
+    <!--
     <button
       authorization="DockerContainerStart"
       type="button"
@@ -12,6 +13,7 @@
     >
       <i class="fa fa-play space-right" aria-hidden="true"></i>Start
     </button>
+    -->
     <button
       authorization="DockerContainerStop"
       type="button"
@@ -30,6 +32,7 @@
     >
       <i class="fa fa-bomb space-right" aria-hidden="true"></i>Kill
     </button>
+    <!--
     <button
       authorization="DockerContainerRestart"
       type="button"
@@ -57,6 +60,7 @@
     >
       <i class="fa fa-play space-right" aria-hidden="true"></i>Resume
     </button>
+    -->
     <button
       authorization="DockerContainerDelete"
       type="button"
@@ -67,7 +71,9 @@
       <i class="fa fa-trash-alt space-right" aria-hidden="true"></i>Remove
     </button>
   </div>
+  <!--
   <button authorization="DockerContainerCreate" type="button" class="btn btn-sm btn-primary" ui-sref="docker.containers.new" ng-if="$ctrl.showAddAction">
     <i class="fa fa-plus space-right" aria-hidden="true"></i>Add container
   </button>
+  -->
 </div>
