@@ -60,14 +60,19 @@
   Volumes
 </sidebar-menu-item>
 
-<sidebar-menu
+<sidebar-menu-item
   icon-class="fa-server fa-fw"
-  label="Cluster"
   path="kubernetes.cluster"
   path-params="{ endpointId: $ctrl.endpointId }"
+  class-name="sidebar-list"
+  data-cy="k8sSidebar-cluster"
+>
+  Cluster
+</sidebar-menu-item>
+<!--
+  is-sidebar-open="$ctrl.isSidebarOpen"
   children-paths="['kubernetes.cluster', 'portainer.endpoints.endpoint.kubernetesConfig', 'kubernetes.registries', 'kubernetes.registries.access']"
 >
-<!--
   <div ng-if="$ctrl.adminAccess">
     <sidebar-menu-item
       authorization="K8sClusterSetupRW"
@@ -88,6 +93,6 @@
     >
       Registries
     </sidebar-menu-item>
--->
   </div>
 </sidebar-menu>
+-->
