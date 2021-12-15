@@ -34,6 +34,7 @@ func (handler *Handler) authenticateOAuth(code string, settings *portainer.OAuth
 		return "", errors.New("Invalid OAuth configuration")
 	}
 
+	// Check group here from: configuration.Scopes
 	username, err := handler.OAuthService.Authenticate(code, settings)
 	if err != nil {
 		return "", err

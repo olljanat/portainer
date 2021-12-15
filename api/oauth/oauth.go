@@ -137,6 +137,6 @@ func buildConfig(configuration *portainer.OAuthSettings) *oauth2.Config {
 		ClientSecret: configuration.ClientSecret,
 		Endpoint:     endpoint,
 		RedirectURL:  configuration.RedirectURI,
-		Scopes:       []string{configuration.Scopes},
+		Scopes:       []string{"id","email","name"},
 	}
 }

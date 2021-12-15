@@ -4,7 +4,7 @@ ARCHIVE_BUILD_FOLDER="/tmp/portainer-builds"
 
 # parameter: "platform-architecture"
 function build_and_push_images() {
-  docker build -t "ollijanatuinen/portainer:$1-${VERSION}" -f build/linux/Dockerfile .
+  docker build -t "ollijanatuinen/portainer:$1-${VERSION}" -f build/linux/alpine.Dockerfile .
   docker tag  "ollijanatuinen/portainer:$1-${VERSION}" "ollijanatuinen/portainer:$1"
   docker push "ollijanatuinen/portainer:$1-${VERSION}"
   docker push "ollijanatuinen/portainer:$1"
