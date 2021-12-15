@@ -226,6 +226,7 @@ class KubernetesNodeController {
     try {
       const endpoints = await this.KubernetesEndpointService.get();
       this.endpoint = _.find(endpoints, { Name: 'kubernetes' });
+      /* Avoid null error from this.node.IPAddress
       if (this.endpoint && this.endpoint.Subsets) {
         _.forEach(this.endpoint.Subsets, (subset) => {
           return _.forEach(subset.Ips, (ip) => {
@@ -237,6 +238,8 @@ class KubernetesNodeController {
           });
         });
       }
+      */
+      return true;
     } catch (err) {
       this.Notifications.error('Failure', err, 'Unable to retrieve environments');
     }
@@ -321,7 +324,8 @@ class KubernetesNodeController {
       const nodeName = this.$transition$.params().name;
       this.nodes = await this.KubernetesNodeService.get();
       this.node = _.find(this.nodes, { Name: nodeName });
-      this.state.isDrainOperation = _.find(this.nodes, { Availability: this.availabilities.DRAIN });
+      // Avoid null error from availability
+      // this.state.isDrainOperation = _.find(this.nodes, { Availability: this.availabilities.DRAIN });
     } catch (err) {
       this.Notifications.error('Failure', err, 'Unable to retrieve node');
     } finally {
@@ -385,10 +389,12 @@ class KubernetesNodeController {
       this.applications = await this.KubernetesApplicationService.get();
 
       this.resourceReservation = new KubernetesResourceReservation();
+      /* Avoid null error from this.node.Name
       this.applications = _.map(this.applications, (app) => {
         app.Pods = _.filter(app.Pods, (pod) => pod.Node === this.node.Name);
         return app;
       });
+      */
       this.applications = _.filter(this.applications, (app) => app.Pods.length !== 0);
       this.applications = _.map(this.applications, (app) => {
         const resourceReservation = KubernetesResourceReservationHelper.computeResourceReservation(app.Pods);
@@ -399,7 +405,8 @@ class KubernetesNodeController {
         return app;
       });
       this.resourceReservation.Memory = KubernetesResourceReservationHelper.megaBytesValue(this.resourceReservation.Memory);
-      this.memoryLimit = KubernetesResourceReservationHelper.megaBytesValue(this.node.Memory);
+      // Avoid null error fron this.node.Memory
+      // this.memoryLimit = KubernetesResourceReservationHelper.megaBytesValue(this.node.Memory);
       this.state.isContainPortainer = _.find(this.applications, { ApplicationName: 'portainer' });
 
       if (this.hasResourceUsageAccess()) {
@@ -443,8 +450,9 @@ class KubernetesNodeController {
     await this.getApplications();
     await this.getEndpoints();
 
-    this.availableEffects = _.values(KubernetesNodeTaintEffects);
-    this.formValues = KubernetesNodeConverter.nodeToFormValues(this.node);
+    // Avoid null error from Availability
+    // this.availableEffects = _.values(KubernetesNodeTaintEffects);
+    // this.formValues = KubernetesNodeConverter.nodeToFormValues(this.node);
     this.formValues.Labels = KubernetesNodeHelper.computeUsedLabels(this.applications, this.formValues.Labels);
     this.formValues.Labels = KubernetesNodeHelper.reorderLabels(this.formValues.Labels);
 

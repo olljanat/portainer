@@ -152,6 +152,7 @@ func (service *Service) startSnapshotLoop() error {
 }
 
 func (service *Service) snapshotEndpoints() error {
+	/*
 	endpoints, err := service.dataStore.Endpoint().Endpoints()
 	if err != nil {
 		return err
@@ -185,7 +186,7 @@ func (service *Service) snapshotEndpoints() error {
 			continue
 		}
 	}
-
+	*/
 	return nil
 }
 
