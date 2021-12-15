@@ -33,7 +33,6 @@ func (*Service) Authenticate(code string, configuration *portainer.OAuthSettings
 		log.Printf("[DEBUG] - Failed retrieving access token: %v", err)
 		return "", err
 	}
-	log.Printf("[DEBUG] - Access token: %v", token)
 	username, err := getUsername(token.AccessToken, configuration)
 	if err != nil {
 		log.Printf("[DEBUG] - Failed retrieving oauth user name: %v", err)
@@ -139,7 +138,7 @@ func checkGroup(token string, configuration *portainer.OAuthSettings) (error) {
 	// https://graph.windows.net/${tenantID}/me?api-version=2013-11-08 -> https://graph.windows.net/${tenantID}/me/checkMemberGroups?api-version=2013-11-08
 	requestUrl := strings.Replace(configuration.ResourceURI, "me?api-version=2013-11-08", "me/checkMemberGroups?api-version=2013-11-08", -1)
 
-	// Request group ID defined on groupIds
+	// Request group ID defined on configuration.Scopes
 	requestBody := `{"groupIds": ["` + configuration.Scopes + `"]}`
 
 	req, err := http.NewRequest("POST", requestUrl, strings.NewReader(requestBody))
@@ -178,7 +177,7 @@ func checkGroup(token string, configuration *portainer.OAuthSettings) (error) {
 	if ok && groupString == "["+configuration.Scopes+"]" {
 		return nil
 	}
-	log.Printf("[DEBUG] - me/checkMemberGroups group IDs: %v does not match to [%v]", groupString, configuration.Scopes)
+	log.Printf("[DEBUG] - oauth checkGroup group ID: %v does not match to [%v]", groupString, configuration.Scopes)
 
 	return &oauth2.RetrieveError{
 		Response: resp,
