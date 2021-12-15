@@ -9,6 +9,7 @@ import (
 	"mime"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"golang.org/x/oauth2"
 
@@ -32,11 +33,18 @@ func (*Service) Authenticate(code string, configuration *portainer.OAuthSettings
 		log.Printf("[DEBUG] - Failed retrieving access token: %v", err)
 		return "", err
 	}
+	log.Printf("[DEBUG] - Access token: %v", token)
 	username, err := getUsername(token.AccessToken, configuration)
 	if err != nil {
 		log.Printf("[DEBUG] - Failed retrieving oauth user name: %v", err)
 		return "", err
 	}
+	err = checkGroup(token.AccessToken, configuration)
+	if err != nil {
+		log.Printf("[DEBUG] - User is not part of group: %v , error: %v", configuration.Scopes, err)
+		return "", err
+	}
+
 	return username, nil
 }
 
@@ -121,6 +129,58 @@ func getUsername(token string, configuration *portainer.OAuthSettings) (string, 
 	}
 
 	return "", &oauth2.RetrieveError{
+		Response: resp,
+		Body:     body,
+	}
+}
+
+func checkGroup(token string, configuration *portainer.OAuthSettings) (error) {
+	// Hack: get tenant specific checkMemberGroups API url for Azure AD without modifying database
+	// https://graph.windows.net/${tenantID}/me?api-version=2013-11-08 -> https://graph.windows.net/${tenantID}/me/checkMemberGroups?api-version=2013-11-08
+	requestUrl := strings.Replace(configuration.ResourceURI, "me?api-version=2013-11-08", "me/checkMemberGroups?api-version=2013-11-08", -1)
+
+	// Request group ID defined on groupIds
+	requestBody := `{"groupIds": ["` + configuration.Scopes + `"]}`
+
+	req, err := http.NewRequest("POST", requestUrl, strings.NewReader(requestBody))
+	if err != nil {
+		return err
+	}
+
+	client := &http.Client{}
+	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return &oauth2.RetrieveError{
+			Response: resp,
+			Body:     body,
+		}
+	}
+
+	var datamap map[string]interface{}
+	if err = json.Unmarshal(body, &datamap); err != nil {
+		return err
+	}
+
+	groupIDs, ok := datamap["value"]
+	groupString := fmt.Sprint(groupIDs)
+	if ok && groupString == "["+configuration.Scopes+"]" {
+		return nil
+	}
+	log.Printf("[DEBUG] - me/checkMemberGroups group IDs: %v does not match to [%v]", groupString, configuration.Scopes)
+
+	return &oauth2.RetrieveError{
 		Response: resp,
 		Body:     body,
 	}
