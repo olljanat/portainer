@@ -20,7 +20,6 @@ import (
 	"github.com/portainer/portainer/api/docker"
 	"github.com/portainer/portainer/api/http/proxy/factory/utils"
 	"github.com/portainer/portainer/api/http/security"
-	"github.com/portainer/portainer/api/internal/authorization"
 )
 
 var apiVersionRe = regexp.MustCompile(`(/v[0-9]\.[0-9]*)?`)
@@ -478,63 +477,6 @@ func (transport *Transport) decorateRegistryAuthenticationHeader(request *http.R
 }
 
 func (transport *Transport) restrictedResourceOperation(request *http.Request, resourceID string, dockerResourceID string, resourceType portainer.ResourceControlType, volumeBrowseRestrictionCheck bool) (*http.Response, error) {
-	var err error
-	tokenData, err := security.RetrieveTokenData(request)
-	if err != nil {
-		return nil, err
-	}
-
-	if tokenData.Role != portainer.AdministratorRole {
-		if volumeBrowseRestrictionCheck {
-			securitySettings, err := transport.fetchEndpointSecuritySettings()
-			if err != nil {
-				return nil, err
-			}
-
-			if !securitySettings.AllowVolumeBrowserForRegularUsers {
-				return utils.WriteAccessDeniedResponse()
-			}
-		}
-
-		teamMemberships, err := transport.dataStore.TeamMembership().TeamMembershipsByUserID(tokenData.ID)
-		if err != nil {
-			return nil, err
-		}
-
-		userTeamIDs := make([]portainer.TeamID, 0)
-		for _, membership := range teamMemberships {
-			userTeamIDs = append(userTeamIDs, membership.TeamID)
-		}
-
-		resourceControls, err := transport.dataStore.ResourceControl().ResourceControls()
-		if err != nil {
-			return nil, err
-		}
-
-		resourceControl := authorization.GetResourceControlByResourceIDAndType(resourceID, resourceType, resourceControls)
-		if resourceControl == nil {
-			agentTargetHeader := request.Header.Get(portainer.PortainerAgentTargetHeader)
-
-			if dockerResourceID == "" {
-				dockerResourceID = resourceID
-			}
-
-			// This resource was created outside of portainer,
-			// is part of a Docker service or part of a Docker Swarm/Compose stack.
-			inheritedResourceControl, err := transport.getInheritedResourceControlFromServiceOrStack(dockerResourceID, agentTargetHeader, resourceType, resourceControls)
-			if err != nil {
-				return nil, err
-			}
-
-			if inheritedResourceControl == nil || !authorization.UserCanAccessResource(tokenData.ID, userTeamIDs, inheritedResourceControl) {
-				return utils.WriteAccessDeniedResponse()
-			}
-		}
-
-		if resourceControl != nil && !authorization.UserCanAccessResource(tokenData.ID, userTeamIDs, resourceControl) {
-			return utils.WriteAccessDeniedResponse()
-		}
-	}
 	return transport.executeDockerRequest(request)
 }
 

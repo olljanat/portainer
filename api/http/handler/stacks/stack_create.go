@@ -209,19 +209,9 @@ func (handler *Handler) isValidStackFile(stackFileContent []byte, securitySettin
 
 func (handler *Handler) decorateStackResponse(w http.ResponseWriter, stack *portainer.Stack, userID portainer.UserID) *httperror.HandlerError {
 	var resourceControl *portainer.ResourceControl
+	resourceControl = authorization.NewAdministratorsOnlyResourceControl(stackutils.ResourceControlID(stack.EndpointID, stack.Name), portainer.StackResourceControl)
 
-	isAdmin, err := handler.userIsAdmin(userID)
-	if err != nil {
-		return &httperror.HandlerError{http.StatusInternalServerError, "Unable to load user information from the database", err}
-	}
-
-	if isAdmin {
-		resourceControl = authorization.NewAdministratorsOnlyResourceControl(stackutils.ResourceControlID(stack.EndpointID, stack.Name), portainer.StackResourceControl)
-	} else {
-		resourceControl = authorization.NewPrivateResourceControl(stackutils.ResourceControlID(stack.EndpointID, stack.Name), portainer.StackResourceControl, userID)
-	}
-
-	err = handler.DataStore.ResourceControl().Create(resourceControl)
+	err := handler.DataStore.ResourceControl().Create(resourceControl)
 	if err != nil {
 		return &httperror.HandlerError{http.StatusInternalServerError, "Unable to persist resource control inside the database", err}
 	}

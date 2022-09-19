@@ -4,10 +4,10 @@ ARCHIVE_BUILD_FOLDER="/tmp/portainer-builds"
 
 # parameter: "platform-architecture"
 function build_and_push_images() {
-  docker build -t "portainer/portainer:$1-${VERSION}" -f build/linux/Dockerfile .
-  docker tag  "portainer/portainer:$1-${VERSION}" "portainer/portainer:$1"
-  docker push "portainer/portainer:$1-${VERSION}"
-  docker push "portainer/portainer:$1"
+  docker build -t "ollijanatuinen/portainer:$1-${VERSION}" -f build/linux/alpine.Dockerfile .
+  docker tag  "ollijanatuinen/portainer:$1-${VERSION}" "ollijanatuinen/portainer:${VERSION}"
+  docker push "ollijanatuinen/portainer:$1-${VERSION}"
+  docker push "ollijanatuinen/portainer:${VERSION}"
 }
 
 # parameter: "platform-architecture"
@@ -42,7 +42,7 @@ else
   if [ `echo "$@" | cut -c1-4` == 'echo' ]; then
     bash -c "$@";
   else
-    build_all 'linux-amd64 linux-arm linux-arm64 linux-ppc64le linux-s390x darwin-amd64 windows-amd64'
+    build_all 'linux-amd64'
     exit 0
   fi
 fi

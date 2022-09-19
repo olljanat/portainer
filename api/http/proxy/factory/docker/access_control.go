@@ -152,40 +152,12 @@ func (transport *Transport) applyAccessControlOnResource(parameters *resourceOpe
 		return nil
 	}
 
-	if parameters.resourceType == portainer.NetworkResourceControl {
-		systemResourceControl := findSystemNetworkResourceControl(responseObject)
-		if systemResourceControl != nil {
-			responseObject = decorateObject(responseObject, systemResourceControl)
-			return utils.RewriteResponse(response, responseObject, http.StatusOK)
-		}
-	}
-
-	resourceIdentifier := responseObject[parameters.resourceIdentifierAttribute].(string)
-	resourceLabelsObject := parameters.labelsObjectSelector(responseObject)
-
-	resourceControl, err := transport.findResourceControl(resourceIdentifier, parameters.resourceType, resourceLabelsObject, executor.operationContext.resourceControls)
-	if err != nil {
-		return err
-	}
-
-	if resourceControl == nil && (executor.operationContext.isAdmin) {
-		return utils.RewriteResponse(response, responseObject, http.StatusOK)
-	}
-
-	if executor.operationContext.isAdmin || (resourceControl != nil && authorization.UserCanAccessResource(executor.operationContext.userID, executor.operationContext.userTeamIDs, resourceControl)) {
-		responseObject = decorateObject(responseObject, resourceControl)
-		return utils.RewriteResponse(response, responseObject, http.StatusOK)
-	}
-
-	return utils.RewriteAccessDeniedResponse(response)
+	responseObject = decorateObject(responseObject, nil)
+	return utils.RewriteResponse(response, responseObject, http.StatusOK)
 }
 
 func (transport *Transport) applyAccessControlOnResourceList(parameters *resourceOperationParameters, resourceData []interface{}, executor *operationExecutor) ([]interface{}, error) {
-	if executor.operationContext.isAdmin {
-		return transport.decorateResourceList(parameters, resourceData, executor.operationContext.resourceControls)
-	}
-
-	return transport.filterResourceList(parameters, resourceData, executor.operationContext)
+	return transport.decorateResourceList(parameters, resourceData, executor.operationContext.resourceControls)
 }
 
 func (transport *Transport) decorateResourceList(parameters *resourceOperationParameters, resourceData []interface{}, resourceControls []portainer.ResourceControl) ([]interface{}, error) {
@@ -236,9 +208,6 @@ func (transport *Transport) filterResourceList(parameters *resourceOperationPara
 			continue
 		}
 
-		resourceIdentifier := resourceObject[parameters.resourceIdentifierAttribute].(string)
-		resourceLabelsObject := parameters.labelsObjectSelector(resourceObject)
-
 		if parameters.resourceType == portainer.NetworkResourceControl {
 			systemResourceControl := findSystemNetworkResourceControl(resourceObject)
 			if systemResourceControl != nil {
@@ -248,22 +217,8 @@ func (transport *Transport) filterResourceList(parameters *resourceOperationPara
 			}
 		}
 
-		resourceControl, err := transport.findResourceControl(resourceIdentifier, parameters.resourceType, resourceLabelsObject, context.resourceControls)
-		if err != nil {
-			return nil, err
-		}
-
-		if resourceControl == nil {
-			if context.isAdmin {
-				filteredResourceData = append(filteredResourceData, resourceObject)
-			}
-			continue
-		}
-
-		if context.isAdmin || authorization.UserCanAccessResource(context.userID, context.userTeamIDs, resourceControl) {
-			resourceObject = decorateObject(resourceObject, resourceControl)
-			filteredResourceData = append(filteredResourceData, resourceObject)
-		}
+		filteredResourceData = append(filteredResourceData, resourceObject)
+		continue
 	}
 
 	return filteredResourceData, nil

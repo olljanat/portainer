@@ -3,14 +3,10 @@ package stacks
 import (
 	"net/http"
 
-	httperrors "github.com/portainer/portainer/api/http/errors"
-
 	httperror "github.com/portainer/libhttp/error"
 	"github.com/portainer/libhttp/request"
 	"github.com/portainer/libhttp/response"
 	portainer "github.com/portainer/portainer/api"
-	"github.com/portainer/portainer/api/http/security"
-	"github.com/portainer/portainer/api/internal/authorization"
 )
 
 type stackListOperationFilters struct {
@@ -21,10 +17,7 @@ type stackListOperationFilters struct {
 
 // @id StackList
 // @summary List stacks
-// @description List all stacks based on the current user authorizations.
-// @description Will return all stacks if using an administrator account otherwise it
-// @description will only return the list of stacks the user have access to.
-// @description **Access policy**: authenticated
+// @description List all stacks.
 // @tags stacks
 // @security ApiKeyAuth
 // @security jwt
@@ -51,43 +44,6 @@ func (handler *Handler) stackList(w http.ResponseWriter, r *http.Request) *httpe
 		return &httperror.HandlerError{http.StatusInternalServerError, "Unable to retrieve stacks from the database", err}
 	}
 	stacks = filterStacks(stacks, &filters, endpoints)
-
-	resourceControls, err := handler.DataStore.ResourceControl().ResourceControls()
-	if err != nil {
-		return &httperror.HandlerError{http.StatusInternalServerError, "Unable to retrieve resource controls from the database", err}
-	}
-
-	securityContext, err := security.RetrieveRestrictedRequestContext(r)
-	if err != nil {
-		return &httperror.HandlerError{http.StatusInternalServerError, "Unable to retrieve info from request context", err}
-	}
-
-	stacks = authorization.DecorateStacks(stacks, resourceControls)
-
-	if !securityContext.IsAdmin {
-		if filters.IncludeOrphanedStacks {
-			return &httperror.HandlerError{http.StatusForbidden, "Permission denied to access orphaned stacks", httperrors.ErrUnauthorized}
-		}
-
-		user, err := handler.DataStore.User().User(securityContext.UserID)
-		if err != nil {
-			return &httperror.HandlerError{http.StatusInternalServerError, "Unable to retrieve user information from the database", err}
-		}
-
-		userTeamIDs := make([]portainer.TeamID, 0)
-		for _, membership := range securityContext.UserMemberships {
-			userTeamIDs = append(userTeamIDs, membership.TeamID)
-		}
-
-		stacks = authorization.FilterAuthorizedStacks(stacks, user, userTeamIDs)
-	}
-
-	for _, stack := range stacks {
-		if stack.GitConfig != nil && stack.GitConfig.Authentication != nil && stack.GitConfig.Authentication.Password != "" {
-			// sanitize password in the http response to minimise possible security leaks
-			stack.GitConfig.Authentication.Password = ""
-		}
-	}
 
 	return response.JSON(w, stacks)
 }

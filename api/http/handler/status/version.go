@@ -1,7 +1,6 @@
 package status
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -9,7 +8,6 @@ import (
 
 	portainer "github.com/portainer/portainer/api"
 	"github.com/portainer/portainer/api/build"
-	"github.com/portainer/portainer/api/http/client"
 
 	"github.com/portainer/libhttp/response"
 	log "github.com/sirupsen/logrus"
@@ -59,33 +57,7 @@ func (handler *Handler) version(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	latestVersion := getLatestVersion()
-	if hasNewerVersion(portainer.APIVersion, latestVersion) {
-		result.UpdateAvailable = true
-		result.LatestVersion = latestVersion
-	}
-
 	response.JSON(w, &result)
-}
-
-func getLatestVersion() string {
-	motd, err := client.Get(portainer.VersionCheckURL, 5)
-	if err != nil {
-		log.WithError(err).Debug("couldn't fetch latest Portainer release version")
-		return ""
-	}
-
-	var data struct {
-		TagName string `json:"tag_name"`
-	}
-
-	err = json.Unmarshal(motd, &data)
-	if err != nil {
-		log.WithError(err).Debug("couldn't parse latest Portainer version")
-		return ""
-	}
-
-	return data.TagName
 }
 
 func hasNewerVersion(currentVersion, latestVersion string) bool {
