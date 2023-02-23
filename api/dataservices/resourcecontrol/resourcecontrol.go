@@ -47,41 +47,13 @@ func (service *Service) ResourceControl(ID portainer.ResourceControlID) (*portai
 	return &resourceControl, nil
 }
 
-// ResourceControlByResourceIDAndType returns a ResourceControl object by checking if the resourceID is equal
-// to the main ResourceID or in SubResourceIDs. It also performs a check on the resource type. Return nil
-// if no ResourceControl was found.
+// ResourceControlByResourceIDAndType makes all resources public
 func (service *Service) ResourceControlByResourceIDAndType(resourceID string, resourceType portainer.ResourceControlType) (*portainer.ResourceControl, error) {
-	var resourceControl *portainer.ResourceControl
-	stop := fmt.Errorf("ok")
-	err := service.connection.GetAll(
-		BucketName,
-		&portainer.ResourceControl{},
-		func(obj interface{}) (interface{}, error) {
-			rc, ok := obj.(*portainer.ResourceControl)
-			if !ok {
-				log.Debug().Str("obj", fmt.Sprintf("%#v", obj)).Msg("failed to convert to ResourceControl object")
-				return nil, fmt.Errorf("Failed to convert to ResourceControl object: %s", obj)
-			}
-
-			if rc.ResourceID == resourceID && rc.Type == resourceType {
-				resourceControl = rc
-				return nil, stop
-			}
-
-			for _, subResourceID := range rc.SubResourceIDs {
-				if subResourceID == resourceID {
-					resourceControl = rc
-					return nil, stop
-				}
-			}
-
-			return &portainer.ResourceControl{}, nil
-		})
-	if err == stop {
-		return resourceControl, nil
+	resourceControl := portainer.ResourceControl{
+		AdministratorsOnly: false,
+		Public:             true,
 	}
-
-	return nil, err
+	return &resourceControl, nil
 }
 
 // ResourceControls returns all the ResourceControl objects
