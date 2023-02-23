@@ -52,7 +52,7 @@ func (tx *StoreTx) Registry() dataservices.RegistryService {
 }
 
 func (tx *StoreTx) ResourceControl() dataservices.ResourceControlService {
-	return tx.store.ResourceControlService.Tx(tx.tx)
+	return nil
 }
 
 func (tx *StoreTx) Role() dataservices.RoleService {

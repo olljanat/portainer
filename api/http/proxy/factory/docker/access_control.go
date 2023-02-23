@@ -50,11 +50,6 @@ func getUniqueElements(items string) []string {
 func (transport *Transport) newResourceControlFromPortainerLabels(labelsObject map[string]interface{}, resourceID string, resourceType portainer.ResourceControlType) (*portainer.ResourceControl, error) {
 	resourceControl := authorization.NewPublicResourceControl(resourceID, resourceType)
 
-	err := transport.dataStore.ResourceControl().Create(resourceControl)
-	if err != nil {
-		return nil, err
-	}
-
 	return resourceControl, nil
 }
 

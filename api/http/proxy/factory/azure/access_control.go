@@ -18,15 +18,10 @@ func (transport *Transport) createAzureRequestContext(request *http.Request) (*a
 		return nil, err
 	}
 
-	resourceControls, err := transport.dataStore.ResourceControl().ReadAll()
-	if err != nil {
-		return nil, err
-	}
-
 	context := &azureRequestContext{
 		isAdmin:          true,
 		userID:           tokenData.ID,
-		resourceControls: resourceControls,
+		resourceControls: nil,
 	}
 
 	if tokenData.Role != portainer.AdministratorRole {

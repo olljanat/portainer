@@ -180,20 +180,8 @@ func (m *Migrator) updateVolumeResourceControlToDB32() error {
 		return fmt.Errorf("failed fetching environments: %w", err)
 	}
 
-	resourceControls, err := m.resourceControlService.ReadAll()
-	if err != nil {
-		return fmt.Errorf("failed fetching resource controls: %w", err)
-	}
-
 	toUpdate := map[portainer.ResourceControlID]string{}
 	volumeResourceControls := map[string]*portainer.ResourceControl{}
-
-	for i := range resourceControls {
-		resourceControl := resourceControls[i]
-		if resourceControl.Type == portainer.VolumeResourceControl {
-			volumeResourceControls[resourceControl.ResourceID] = &resourceControl
-		}
-	}
 
 	for _, endpoint := range endpoints {
 		if !endpointutils.IsDockerEndpoint(&endpoint) {

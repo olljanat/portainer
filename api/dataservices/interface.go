@@ -141,6 +141,10 @@ type (
 	ResourceControlService interface {
 		BaseCRUD[portainer.ResourceControl, portainer.ResourceControlID]
 		ResourceControlByResourceIDAndType(resourceID string, resourceType portainer.ResourceControlType) (*portainer.ResourceControl, error)
+		Create(rc *portainer.ResourceControl) error
+		UpdateResourceControl(ID portainer.ResourceControlID, resourceControl *portainer.ResourceControl) error
+		DeleteResourceControl(ID portainer.ResourceControlID) error
+		BucketName() string
 	}
 
 	// RoleService represents a service for managing user roles
