@@ -35,12 +35,7 @@ func (handler *Handler) customTemplateList(w http.ResponseWriter, r *http.Reques
 		return httperror.InternalServerError("Unable to retrieve custom templates from the database", err)
 	}
 
-	resourceControls, err := handler.DataStore.ResourceControl().ResourceControls()
-	if err != nil {
-		return httperror.InternalServerError("Unable to retrieve resource controls from the database", err)
-	}
-
-	customTemplates = authorization.DecorateCustomTemplates(customTemplates, resourceControls)
+	customTemplates = authorization.DecorateCustomTemplates(customTemplates, nil)
 
 	securityContext, err := security.RetrieveRestrictedRequestContext(r)
 	if err != nil {

@@ -52,17 +52,12 @@ func (handler *Handler) stackList(w http.ResponseWriter, r *http.Request) *httpe
 	}
 	stacks = filterStacks(stacks, &filters, endpoints)
 
-	resourceControls, err := handler.DataStore.ResourceControl().ResourceControls()
-	if err != nil {
-		return httperror.InternalServerError("Unable to retrieve resource controls from the database", err)
-	}
-
 	securityContext, err := security.RetrieveRestrictedRequestContext(r)
 	if err != nil {
 		return httperror.InternalServerError("Unable to retrieve info from request context", err)
 	}
 
-	stacks = authorization.DecorateStacks(stacks, resourceControls)
+	stacks = authorization.DecorateStacks(stacks, nil)
 
 	if !securityContext.IsAdmin {
 		if filters.IncludeOrphanedStacks {
