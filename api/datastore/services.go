@@ -293,7 +293,7 @@ func (store *Store) Registry() dataservices.RegistryService {
 
 // ResourceControl gives access to the ResourceControl data management layer
 func (store *Store) ResourceControl() dataservices.ResourceControlService {
-	return store.ResourceControlService
+	return nil
 }
 
 // Role gives access to the Role data management layer
@@ -470,14 +470,6 @@ func (store *Store) Export(filename string) (err error) {
 		}
 	} else {
 		backup.Registry = r
-	}
-
-	if c, err := store.ResourceControl().ReadAll(); err != nil {
-		if !store.IsErrObjectNotFound(err) {
-			log.Error().Err(err).Msg("exporting Resource Controls")
-		}
-	} else {
-		backup.ResourceControl = c
 	}
 
 	if role, err := store.Role().ReadAll(); err != nil {

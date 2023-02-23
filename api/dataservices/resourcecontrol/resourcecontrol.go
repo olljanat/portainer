@@ -1,13 +1,9 @@
 package resourcecontrol
 
 import (
-	"errors"
-	"fmt"
-
 	portainer "github.com/portainer/portainer/api"
 	"github.com/portainer/portainer/api/dataservices"
-
-	"github.com/rs/zerolog/log"
+	"github.com/portainer/portainer/api/internal/authorization"
 )
 
 // BucketName represents the name of the bucket where this service stores data.
@@ -47,46 +43,20 @@ func (service *Service) Tx(tx portainer.Transaction) ServiceTx {
 // to the main ResourceID or in SubResourceIDs. It also performs a check on the resource type. Return nil
 // if no ResourceControl was found.
 func (service *Service) ResourceControlByResourceIDAndType(resourceID string, resourceType portainer.ResourceControlType) (*portainer.ResourceControl, error) {
-	var resourceControl *portainer.ResourceControl
-	stop := fmt.Errorf("ok")
-	err := service.Connection.GetAll(
-		BucketName,
-		&portainer.ResourceControl{},
-		func(obj interface{}) (interface{}, error) {
-			rc, ok := obj.(*portainer.ResourceControl)
-			if !ok {
-				log.Debug().Str("obj", fmt.Sprintf("%#v", obj)).Msg("failed to convert to ResourceControl object")
-				return nil, fmt.Errorf("failed to convert to ResourceControl object: %s", obj)
-			}
-
-			if rc.ResourceID == resourceID && rc.Type == resourceType {
-				resourceControl = rc
-				return nil, stop
-			}
-
-			for _, subResourceID := range rc.SubResourceIDs {
-				if subResourceID == resourceID {
-					resourceControl = rc
-					return nil, stop
-				}
-			}
-
-			return &portainer.ResourceControl{}, nil
-		})
-	if errors.Is(err, stop) {
-		return resourceControl, nil
-	}
-
-	return nil, err
+	return authorization.NewPublicResourceControl(resourceID, resourceType), nil
 }
 
 // CreateResourceControl creates a new ResourceControl object
 func (service *Service) Create(resourceControl *portainer.ResourceControl) error {
-	return service.Connection.CreateObject(
-		BucketName,
-		func(id uint64) (int, interface{}) {
-			resourceControl.ID = portainer.ResourceControlID(id)
-			return int(resourceControl.ID), resourceControl
-		},
-	)
+	return nil
+}
+
+// UpdateResourceControl saves a ResourceControl object.
+func (service *Service) UpdateResourceControl(ID portainer.ResourceControlID, resourceControl *portainer.ResourceControl) error {
+	return nil
+}
+
+// DeleteResourceControl deletes a ResourceControl object by ID
+func (service *Service) DeleteResourceControl(ID portainer.ResourceControlID) error {
+	return nil
 }

@@ -10,20 +10,6 @@ import (
 func (m *Migrator) updateResourceControlsToDBVersion22() error {
 	log.Info().Msg("updating resource controls")
 
-	legacyResourceControls, err := m.resourceControlService.ReadAll()
-	if err != nil {
-		return err
-	}
-
-	for _, resourceControl := range legacyResourceControls {
-		resourceControl.AdministratorsOnly = false
-
-		err := m.resourceControlService.Update(resourceControl.ID, &resourceControl)
-		if err != nil {
-			return err
-		}
-	}
-
 	return nil
 }
 
