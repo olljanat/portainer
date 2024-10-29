@@ -48,72 +48,14 @@ func getUniqueElements(items string) []string {
 }
 
 func (transport *Transport) newResourceControlFromPortainerLabels(labelsObject map[string]interface{}, resourceID string, resourceType portainer.ResourceControlType) (*portainer.ResourceControl, error) {
-	if labelsObject[resourceLabelForPortainerPublicResourceControl] != nil {
-		resourceControl := authorization.NewPublicResourceControl(resourceID, resourceType)
+	resourceControl := authorization.NewPublicResourceControl(resourceID, resourceType)
 
-		err := transport.dataStore.ResourceControl().Create(resourceControl)
-		if err != nil {
-			return nil, err
-		}
-
-		return resourceControl, nil
+	err := transport.dataStore.ResourceControl().Create(resourceControl)
+	if err != nil {
+		return nil, err
 	}
 
-	teamNames := make([]string, 0)
-	userNames := make([]string, 0)
-	if labelsObject[resourceLabelForPortainerTeamResourceControl] != nil {
-		concatenatedTeamNames := labelsObject[resourceLabelForPortainerTeamResourceControl].(string)
-		teamNames = getUniqueElements(concatenatedTeamNames)
-	}
-
-	if labelsObject[resourceLabelForPortainerUserResourceControl] != nil {
-		concatenatedUserNames := labelsObject[resourceLabelForPortainerUserResourceControl].(string)
-		userNames = getUniqueElements(concatenatedUserNames)
-	}
-
-	if len(teamNames) > 0 || len(userNames) > 0 {
-		teamIDs := make([]portainer.TeamID, 0)
-		userIDs := make([]portainer.UserID, 0)
-
-		for _, name := range teamNames {
-			team, err := transport.dataStore.Team().TeamByName(name)
-			if err != nil {
-				log.Warn().
-					Str("name", name).
-					Str("resource_id", resourceID).
-					Msg("unknown team name in access control label, ignoring access control rule for this team")
-
-				continue
-			}
-
-			teamIDs = append(teamIDs, team.ID)
-		}
-
-		for _, name := range userNames {
-			user, err := transport.dataStore.User().UserByUsername(name)
-			if err != nil {
-				log.Warn().
-					Str("name", name).
-					Str("resource_id", resourceID).
-					Msg("unknown user name in access control label, ignoring access control rule for this user")
-
-				continue
-			}
-
-			userIDs = append(userIDs, user.ID)
-		}
-
-		resourceControl := authorization.NewRestrictedResourceControl(resourceID, resourceType, userIDs, teamIDs)
-
-		err := transport.dataStore.ResourceControl().Create(resourceControl)
-		if err != nil {
-			return nil, err
-		}
-
-		return resourceControl, nil
-	}
-
-	return nil, nil
+	return resourceControl, nil
 }
 
 func (transport *Transport) createPrivateResourceControl(resourceIdentifier string, resourceType portainer.ResourceControlType, userID portainer.UserID) (*portainer.ResourceControl, error) {
