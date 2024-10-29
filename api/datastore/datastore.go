@@ -87,20 +87,13 @@ func (store *Store) BackupTo(w io.Writer) error {
 	return store.connection.BackupTo(w)
 }
 
-// CheckCurrentEdition checks if current edition is community edition
+// CheckCurrentEdition checks if current edition is business edition
 func (store *Store) CheckCurrentEdition() error {
-	if store.edition() != portainer.Edition {
-		return portainerErrors.ErrWrongDBEdition
-	}
 	return nil
 }
 
 func (store *Store) edition() portainer.SoftwareEdition {
-	edition, err := store.VersionService.Edition()
-	if store.IsErrObjectNotFound(err) {
-		edition = portainer.PortainerCE
-	}
-	return edition
+	return portainer.PortainerBE
 }
 
 // TODO: move the use of this to dataservices.IsErrObjectNotFound()?

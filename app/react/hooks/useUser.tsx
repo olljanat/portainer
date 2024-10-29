@@ -96,7 +96,7 @@ export function hasAuthorizations(
     return true;
   }
 
-  if (process.env.PORTAINER_EDITION === 'CE') {
+  if (process.env.PORTAINER_EDITION === 'BE') {
     return !adminOnlyCE || isAdmin(user);
   }
 

@@ -62,7 +62,7 @@ func NewTestStore(t testing.TB, init, secure bool) (bool, *Store, func(), error)
 		// from MigrateData
 		v := models.Version{
 			SchemaVersion: portainer.APIVersion,
-			Edition:       int(portainer.PortainerCE),
+			Edition:       int(portainer.PortainerBE),
 		}
 		err = store.VersionService.UpdateVersion(&v)
 		if err != nil {

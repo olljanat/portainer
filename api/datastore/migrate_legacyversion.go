@@ -72,7 +72,7 @@ func dbVersionToSemanticVersion(dbVersion int) string {
 func (store *Store) getOrMigrateLegacyVersion() (*models.Version, error) {
 	// Very old versions of portainer did not have a version bucket, lets set some defaults
 	dbVersion := 24
-	edition := int(portainer.PortainerCE)
+	edition := int(portainer.PortainerBE)
 	instanceId := ""
 
 	// If we already have a version key, we don't need to migrate

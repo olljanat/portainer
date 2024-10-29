@@ -126,7 +126,7 @@ func initDataStore(flags *portainer.CLIFlags, secretKey []byte, fileService port
 		// from MigrateData
 		v := models.Version{
 			SchemaVersion: portainer.APIVersion,
-			Edition:       int(portainer.PortainerCE),
+			Edition:       int(portainer.PortainerBE),
 			InstanceID:    instanceId.String(),
 			MigratorCount: migratorCount,
 		}

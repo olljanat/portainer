@@ -83,7 +83,7 @@ type Handler struct {
 	WebhookHandler         *webhooks.Handler
 }
 
-// @title PortainerCE API
+// @title PortainerBE API
 // @version 2.19.4
 // @description.markdown api-description.md
 // @termsOfService

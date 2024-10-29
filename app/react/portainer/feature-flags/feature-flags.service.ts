@@ -1,13 +1,13 @@
 import { Edition, FeatureId, FeatureState } from './enums';
 
-export const isBE = process.env.PORTAINER_EDITION === 'BE';
+export const isBE = true;
 interface ServiceState {
   currentEdition: Edition;
   features: Record<FeatureId, Edition>;
 }
 
 const state: ServiceState = {
-  currentEdition: Edition.CE,
+  currentEdition: Edition.BE,
   features: <Record<FeatureId, Edition>>{},
 };
 
@@ -74,5 +74,5 @@ export function selectShow(featureId?: FeatureId) {
 }
 
 export function isLimitedToBE(featureId?: FeatureId) {
-  return selectShow(featureId) === FeatureState.LIMITED_BE;
+  return false;
 }
