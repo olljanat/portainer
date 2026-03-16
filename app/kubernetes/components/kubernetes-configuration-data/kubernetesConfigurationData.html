@@ -20,45 +20,6 @@
     </div>
   </div>
 
-  <div class="form-group" ng-if="$ctrl.formValues.IsSimple">
-    <div class="col-sm-12 vertical-center">
-      <button type="button" class="btn btn-sm btn-default" style="margin-left: 0" ng-click="$ctrl.addEntry()" data-cy="k8sConfigCreate-createEntryButton">
-        <pr-icon class="vertical-center" icon="'plus'"></pr-icon> Create entry
-      </button>
-      <button
-        ng-if="
-          !(($ctrl.isDockerConfig || $ctrl.formValues.Type === $ctrl.KubernetesSecretTypeOptions.TLS.value) && $ctrl.formValues.Kind === $ctrl.KubernetesConfigurationKinds.SECRET)
-        "
-        type="button"
-        class="btn btn-sm btn-default ml-0"
-        ngf-select="$ctrl.addEntryFromFile($file)"
-        data-cy="k8sConfigCreate-createConfigsFromFileButton"
-      >
-        <pr-icon icon="'upload'" class="vertical-center"></pr-icon> Create key/value from file
-      </button>
-      <button
-        ng-if="$ctrl.isDockerConfig && $ctrl.formValues.Kind === $ctrl.KubernetesConfigurationKinds.SECRET"
-        type="button"
-        class="btn btn-sm btn-default ml-0"
-        ngf-select="$ctrl.addEntryFromFile($file)"
-        ngf-accept="'.json'"
-        data-cy="k8sConfigCreate-createConfigsFromFileButton"
-      >
-        <pr-icon icon="'upload'" class="vertical-center"></pr-icon> Upload docker config file
-      </button>
-      <button
-        ng-if="$ctrl.formValues.Type === $ctrl.KubernetesSecretTypeOptions.TLS.value && $ctrl.formValues.Kind === $ctrl.KubernetesConfigurationKinds.SECRET"
-        type="button"
-        class="btn btn-sm btn-default ml-0"
-        ngf-select="$ctrl.addEntryFromFile($file)"
-        data-cy="k8sConfigCreate-createConfigsFromFileButton"
-      >
-        <pr-icon icon="'upload'" class="vertical-center"></pr-icon> Upload TLS key/cert file
-      </button>
-      <portainer-tooltip message="'Maximum upload file size is 1MB'"></portainer-tooltip>
-    </div>
-  </div>
-
   <div ng-repeat="(index, entry) in $ctrl.formValues.Data" ng-if="$ctrl.formValues.IsSimple">
     <div class="form-group">
       <label for="configuration_data_key_{{ index }}" class="col-sm-3 col-lg-2 control-label text-left required"
@@ -132,17 +93,6 @@
     <div class="form-group" ng-if="$ctrl.formValues.IsSimple">
       <div class="col-sm-3 col-lg-2"></div>
       <div class="col-sm-8">
-        <button
-          ng-if="!$ctrl.isRequiredKey(entry.Key) || $ctrl.state.duplicateKeys[index] !== undefined"
-          type="button"
-          class="btn btn-sm btn-dangerlight !ml-0"
-          style="margin-left: 0"
-          ng-disabled="entry.Used || $ctrl.isEntryRequired()"
-          ng-click="$ctrl.removeEntry(index, entry)"
-          data-cy="k8sConfigDetail-removeEntryButton{{ index }}"
-        >
-          <pr-icon class="vertical-center" icon="'trash-2'"></pr-icon> Remove entry
-        </button>
         <span class="small text-muted" ng-if="entry.Used">
           <pr-icon icon="'info'" mode="'primary'"></pr-icon>
           This key is currently used by one or more applications

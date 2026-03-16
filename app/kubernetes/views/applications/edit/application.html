@@ -89,48 +89,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <td colspan="2">
-                        <form class="form-horizontal" name="kubernetesApplicationNoteForm">
-                          <div class="form-group">
-                            <div class="col-sm-12 vertical-center">
-                              <pr-icon icon="'edit'"></pr-icon> Note
-                              <button
-                                class="btn btn-xs btn-light vertical-center"
-                                ng-click="ctrl.state.expandedNote = !ctrl.state.expandedNote;"
-                                data-cy="k8sAppDetail-expandNoteButton"
-                                >{{ ctrl.state.expandedNote ? 'Collapse' : 'Expand' }}
-                                <pr-icon icon="'chevron-up'" ng-if="ctrl.state.expandedNote"></pr-icon>
-                                <pr-icon icon="'chevron-down'" ng-if="!ctrl.state.expandedNote"></pr-icon>
-                              </button>
-                            </div>
-                          </div>
-                          <div class="form-group" ng-if="ctrl.state.expandedNote">
-                            <div class="col-sm-12">
-                              <textarea
-                                class="form-control"
-                                name="application_note"
-                                id="application_note"
-                                ng-model="ctrl.formValues.Note"
-                                rows="5"
-                                placeholder="Enter a note about this application..."
-                              ></textarea>
-                            </div>
-                          </div>
-                          <div class="form-group" ng-if="ctrl.state.expandedNote">
-                            <div class="col-sm-12">
-                              <button
-                                class="btn btn-primary btn-sm"
-                                style="margin-left: 0px"
-                                type="button"
-                                ng-click="ctrl.updateApplication()"
-                                ng-disabled="ctrl.formValues.Note === ctrl.application.Note"
-                                data-cy="k8sAppDetail-saveNoteButton"
-                                >{{ ctrl.application.Note ? 'Update' : 'Save' }} note</button
-                              >
-                            </div>
-                          </div>
-                        </form>
-                      </td>
+                      <td colspan="2"> </td>
                     </tr>
                     <!-- <tr>
                       <td colspan="2">
@@ -214,64 +173,6 @@
     <div class="col-sm-12">
       <rd-widget>
         <rd-widget-body>
-          <div ng-if="!ctrl.isSystemNamespace()" class="mb-4 flex items-center gap-1">
-            <button
-              ng-if="!ctrl.isExternalApplication()"
-              type="button"
-              class="btn btn-sm btn-light vertical-center ml-2"
-              ui-sref="kubernetes.applications.application.edit"
-              style="margin-left: 0"
-              data-cy="k8sAppDetail-editAppButton"
-            >
-              <pr-icon icon="'pencil'" class="mr-1"></pr-icon>{{ ctrl.stack.IsComposeFormat ? 'View this application' : 'Edit this application' }}
-            </button>
-            <button
-              authorization="K8sApplicationDetailsW"
-              ng-if="ctrl.isExternalApplication()"
-              type="button"
-              class="btn btn-sm btn-light ml-2"
-              ui-sref="kubernetes.applications.application.edit"
-              data-cy="k8sAppDetail-editAppButton"
-            >
-              <pr-icon icon="'pencil'" class-name="'mr-1'"></pr-icon>Edit external application
-            </button>
-            <be-teaser-button
-              icon="'refresh-cw'"
-              feature-id="ctrl.limitedFeature"
-              message="'A rolling restart of the application is performed.'"
-              heading="'Rolling restart'"
-              button-text="'Rolling restart'"
-              class-name="'be-tooltip-teaser'"
-              className="'be-tooltip-teaser'"
-            ></be-teaser-button>
-            <button
-              ng-if="ctrl.application.ApplicationType !== ctrl.KubernetesApplicationTypes.POD"
-              type="button"
-              class="btn btn-sm btn-light ml-2"
-              ng-click="ctrl.redeployApplication()"
-              data-cy="k8sAppDetail-redeployButton"
-            >
-              <pr-icon icon="'rotate-cw'" class="'mr-1'"></pr-icon>Redeploy
-            </button>
-            <button
-              ng-if="!ctrl.isExternalApplication()"
-              type="button"
-              class="btn btn-sm btn-light"
-              ng-click="ctrl.rollbackApplication()"
-              ng-disabled="ctrl.application.Revisions.length < 2 || ctrl.state.appType !== ctrl.KubernetesDeploymentTypes.APPLICATION_FORM"
-              data-cy="k8sAppDetail-rollbackButton"
-            >
-              <pr-icon icon="'rotate-ccw'" class="mr-1"></pr-icon>Rollback to previous configuration
-            </button>
-            <a
-              ng-if="ctrl.isStack() && ctrl.stackFileContent"
-              class="btn btn-sm btn-primary space-left"
-              ui-sref="kubernetes.templates.custom.new({fileContent: ctrl.stackFileContent})"
-            >
-              <pr-icon icon="'plus'" class="mr-1"></pr-icon>Create template from application
-            </a>
-          </div>
-
           <!-- ACCESSING APPLICATION -->
           <div class="text-muted" style="margin-bottom: 15px"> <pr-icon icon="'external-link'" class="mr-1"></pr-icon>Accessing the application </div>
 
