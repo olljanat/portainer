@@ -2,7 +2,6 @@ import { Box, Edit, Layers, Lock, Server } from 'lucide-react';
 
 import { EnvironmentId } from '@/react/portainer/environments/types';
 import { Authorized } from '@/react/hooks/useUser';
-import Helm from '@/assets/ico/vendor/helm.svg?c';
 import Route from '@/assets/ico/route.svg?c';
 
 import { DashboardLink } from '../items/DashboardLink';
@@ -34,33 +33,12 @@ export function KubernetesSidebar({ environmentId }: Props) {
       />
 
       <SidebarItem
-        to="kubernetes.templates.custom"
-        params={{ endpointId: environmentId }}
-        icon={Edit}
-        label="Custom Templates"
-        data-cy="k8sSidebar-customTemplates"
-      />
-
-      <SidebarItem
         to="kubernetes.resourcePools"
         params={{ endpointId: environmentId }}
         icon={Layers}
         label="Namespaces"
         data-cy="k8sSidebar-namespaces"
       />
-
-      <Authorized
-        authorizations="HelmInstallChart"
-        environmentId={environmentId}
-      >
-        <SidebarItem
-          to="kubernetes.templates.helm"
-          params={{ endpointId: environmentId }}
-          icon={Helm}
-          label="Helm"
-          data-cy="k8sSidebar-helm"
-        />
-      </Authorized>
 
       <SidebarItem
         to="kubernetes.applications"
