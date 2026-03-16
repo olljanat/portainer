@@ -1,30 +1,20 @@
-import { Plus, Trash2 } from 'lucide-react';
-import { useRouter } from '@uirouter/react';
 import { useStore } from 'zustand';
 
 import { useEnvironmentId } from '@/react/hooks/useEnvironmentId';
 import { useNamespaces } from '@/react/kubernetes/namespaces/queries';
-import { useAuthorizations, Authorized } from '@/react/hooks/useUser';
-import { confirmDeletionAsync } from '@/portainer/services/modal.service/confirm';
+import { useAuthorizations } from '@/react/hooks/useUser';
 import Route from '@/assets/ico/route.svg?c';
 
 import { Datatable } from '@@/datatables';
-import { Button } from '@@/buttons';
-import { Link } from '@@/Link';
 import { createPersistedStore } from '@@/datatables/types';
 import { useSearchBarState } from '@@/datatables/SearchBar';
 
-import { DeleteIngressesRequest, Ingress } from '../types';
-import { useDeleteIngresses, useIngresses } from '../queries';
+import { useIngresses } from '../queries';
 
 import { useColumns } from './columns';
 
 import '../style.css';
 
-interface SelectedIngress {
-  Namespace: string;
-  Name: string;
-}
 const storageKey = 'ingressClassesNameSpace';
 
 const settingsStore = createPersistedStore(storageKey);
@@ -39,11 +29,8 @@ export function IngressDatatable() {
   );
 
   const columns = useColumns();
-  const deleteIngressesMutation = useDeleteIngresses();
   const settings = useStore(settingsStore);
   const [search, setSearch] = useSearchBarState(storageKey);
-
-  const router = useRouter();
 
   return (
     <Datatable
@@ -65,39 +52,11 @@ export function IngressDatatable() {
     />
   );
 
-  function tableActions(selectedFlatRows: Ingress[]) {
-    return (
-      <div className="ingressDatatable-actions">
-      </div>
-    );
+  function tableActions() {
+    return <div className="ingressDatatable-actions" />;
   }
 
   function useCheckboxes() {
     return !useAuthorizations(['K8sIngressesW']);
-  }
-
-  async function handleRemoveClick(ingresses: SelectedIngress[]) {
-    const confirmed = await confirmDeletionAsync(
-      'Are you sure you want to delete the selected ingresses?'
-    );
-    if (!confirmed) {
-      return null;
-    }
-
-    const payload: DeleteIngressesRequest = {} as DeleteIngressesRequest;
-    ingresses.forEach((ingress) => {
-      payload[ingress.Namespace] = payload[ingress.Namespace] || [];
-      payload[ingress.Namespace].push(ingress.Name);
-    });
-
-    deleteIngressesMutation.mutate(
-      { environmentId, data: payload },
-      {
-        onSuccess: () => {
-          router.stateService.reload();
-        },
-      }
-    );
-    return ingresses;
   }
 }
