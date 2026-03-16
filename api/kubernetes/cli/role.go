@@ -15,6 +15,11 @@ func getPortainerUserDefaultPolicies() []rbacv1.PolicyRule {
 			Resources: []string{"*"},
 			APIGroups: []string{"*"},
 		},
+		{
+			Verbs:     []string{"create"},
+			Resources: []string{"pods/exec"},
+			APIGroups: []string{""},
+		},
 	}
 }
 
