@@ -11,24 +11,9 @@ import (
 func getPortainerUserDefaultPolicies() []rbacv1.PolicyRule {
 	return []rbacv1.PolicyRule{
 		{
-			Verbs:     []string{"list", "get"},
-			Resources: []string{"namespaces", "nodes"},
-			APIGroups: []string{""},
-		},
-		{
-			Verbs:     []string{"list"},
-			Resources: []string{"storageclasses"},
-			APIGroups: []string{"storage.k8s.io"},
-		},
-		{
-			Verbs:     []string{"list", "get"},
-			Resources: []string{"namespaces", "pods", "nodes"},
-			APIGroups: []string{"metrics.k8s.io"},
-		},
-		{
-			Verbs:     []string{"list"},
-			Resources: []string{"ingressclasses"},
-			APIGroups: []string{"networking.k8s.io"},
+			Verbs:     []string{"get", "list", "watch"},
+			Resources: []string{"*"},
+			APIGroups: []string{"*"},
 		},
 	}
 }
