@@ -68,39 +68,6 @@ export function IngressDatatable() {
   function tableActions(selectedFlatRows: Ingress[]) {
     return (
       <div className="ingressDatatable-actions">
-        <Authorized authorizations="AzureContainerGroupDelete">
-          <Button
-            className="btn-wrapper"
-            color="dangerlight"
-            disabled={selectedFlatRows.length === 0}
-            onClick={() => handleRemoveClick(selectedFlatRows)}
-            icon={Trash2}
-          >
-            Remove
-          </Button>
-        </Authorized>
-
-        <Authorized authorizations="K8sIngressesW">
-          <Link
-            to="kubernetes.ingresses.create"
-            className="space-left no-decoration"
-          >
-            <Button
-              icon={Plus}
-              className="btn-wrapper vertical-center"
-              color="secondary"
-            >
-              Add with form
-            </Button>
-          </Link>
-        </Authorized>
-        <Authorized authorizations="K8sIngressesW">
-          <Link to="kubernetes.deploy" className="space-left no-decoration">
-            <Button icon={Plus} className="btn-wrapper">
-              Create from manifest
-            </Button>
-          </Link>
-        </Authorized>
       </div>
     );
   }

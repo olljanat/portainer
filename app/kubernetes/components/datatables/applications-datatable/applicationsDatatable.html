@@ -22,35 +22,6 @@
         />
       </div>
       <div class="actionBar !gap-3 !mr-0">
-        <button
-          ng-if="$ctrl.isPrimary"
-          type="button"
-          class="btn btn-sm btn-dangerlight h-fit vertical-center !ml-0"
-          ng-disabled="$ctrl.state.selectedItemCount === 0"
-          ng-click="$ctrl.removeAction($ctrl.state.selectedItems)"
-          data-cy="k8sApp-removeAppButton"
-        >
-          <pr-icon icon="'trash-2'"></pr-icon>
-          Remove
-        </button>
-        <button
-          ng-if="$ctrl.isPrimary"
-          type="button"
-          class="btn btn-sm btn-secondary h-fit vertical-center !ml-0"
-          ui-sref="kubernetes.applications.new"
-          data-cy="k8sApp-addApplicationButton"
-        >
-          <pr-icon icon="'plus'" class-name="'!h-3'"></pr-icon>Add with form
-        </button>
-        <button
-          ng-if="$ctrl.isPrimary"
-          type="button"
-          class="btn btn-sm btn-primary h-fit vertical-center !ml-0"
-          ui-sref="kubernetes.deploy"
-          data-cy="k8sApp-deployFromManifestButton"
-        >
-          <pr-icon icon="'plus'" class-name="'!h-3'"></pr-icon>Create from manifest
-        </button>
       </div>
       <div class="settings" data-cy="k8sApp-tableSettings">
         <span class="setting" ng-class="{ 'setting-active': $ctrl.settings.open }" uib-dropdown dropdown-append-to-body auto-close="disabled" is-open="$ctrl.settings.open">
