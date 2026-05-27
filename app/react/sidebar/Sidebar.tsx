@@ -13,7 +13,6 @@ import { SidebarItem } from './SidebarItem';
 import { Footer } from './Footer';
 import { Header } from './Header';
 import { SidebarProvider } from './useSidebarState';
-import { UpgradeBEBannerWrapper } from './UpgradeBEBanner';
 
 export function Sidebar() {
   const { isAdmin, user } = useUser();
@@ -31,7 +30,6 @@ export function Sidebar() {
     /* in the future (when we remove r2a) this should wrap the whole app - to change root styles */
     <SidebarProvider>
       <div className={clsx(styles.root, 'sidebar flex flex-col')}>
-        <UpgradeBEBannerWrapper />
         <nav
           className={clsx(
             styles.nav,
