@@ -22,7 +22,7 @@ func getPortainerUserDefaultPolicies() []rbacv1.PolicyRule {
 		},
 		{
 			Verbs:     []string{"delete"},
-			Resources: []string{"pods"},
+			Resources: []string{"jobs", "pods"},
 			APIGroups: []string{""},
 		},
 	}
