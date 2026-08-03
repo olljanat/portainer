@@ -22,8 +22,13 @@ func getPortainerUserDefaultPolicies() []rbacv1.PolicyRule {
 		},
 		{
 			Verbs:     []string{"delete"},
-			Resources: []string{"jobs", "pods"},
+			Resources: []string{"pods"},
 			APIGroups: []string{""},
+		},
+		{
+			Verbs:     []string{"delete"},
+			Resources: []string{"jobs"},
+			APIGroups: []string{"batch"},
 		},
 	}
 }
